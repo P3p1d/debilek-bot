@@ -1,4 +1,5 @@
 # -*- coding: UTF-8 -*-
+import socket
 import os
 import sys,traceback
 import time
@@ -15,8 +16,14 @@ def get_prefix(bot, message):
     #    # pouze vykricnik mimo server
     #    return '!'
     return commands.when_mentioned_or(*prefixes)(bot, message)
-
+HOST = '' 
+PORT = os.environ["PORT"] 
 TOKEN = os.environ["TOKEN"]
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+try:
+    s.bind((HOST,PORT))
+except Exception as e:
+    print(e)
 bot = discord.Client()
 bot = commands.Bot(command_prefix=get_prefix)
 bot.remove_command('help')

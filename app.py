@@ -17,7 +17,7 @@ def get_prefix(bot, message):
     #    return '!'
     return commands.when_mentioned_or(*prefixes)(bot, message)
 HOST = '' 
-PORT = os.environ["PORT"] 
+PORT = os.environ["$PORT"] 
 TOKEN = os.environ["TOKEN"]
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 try:

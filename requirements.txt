@@ -5,7 +5,7 @@ beautifulsoup4==4.6.3
 cffi==1.11.5
 chardet==3.0.4
 cycler==0.10.0
-discord.py==0.16.12
+discord.py[voice]==0.16.12
 future==0.17.1
 html2text==2018.1.9
 idna==2.7

@@ -64,7 +64,6 @@ class VoiceState:
         while True:
             self.play_next_song.clear()
             self.current = await self.songs.get()
-            #self.current.player = await self.voice.create_ytdl_player(self.current.player.url, ytdl_options=opts, after=self.toggle_next)
             await self.bot.send_message(self.current.channel, 'Teď hraju ' + str(self.current))
             self.current.player.start()
             await self.play_next_song.wait()
@@ -130,6 +129,7 @@ class Music:
     @commands.command(pass_context=True, no_pm=True,aliases=["hraj","hrej"])
     @commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
     async def play(self, ctx, *, song : str):
+        await self.bot.send_typing(ctx.message.channel)
         """Plays a song.
         If there is a song currently in the queue, then it is
         queued until the next song is done playing.
@@ -157,7 +157,7 @@ class Music:
             player.volume = 0.2
             entry = VoiceEntry(ctx.message, player)
             await self.bot.say('Přidáno do fronty ' + str(entry))
-            if str(ctx.message.server.id) not in my_queue:              #pridani do vlastni fronty protoze pres asyncio.Queue() nejde iterovat
+            if str(ctx.message.server.id) not in my_queue:              #pridani do vlastni fronty protoze pres asyncio.Queue() nejde iterovat rip
                 my_queue[str(ctx.message.server.id)] = [player,]
             else:
                 my_queue[str(ctx.message.server.id)].append(player)
@@ -219,7 +219,7 @@ class Music:
         """Vote to skip a song. The song requester can automatically skip.
         3 skip votes are needed for the song to be skipped.
         """
-
+        await self.bot.send_typing(ctx.message.channel)
         state = self.get_voice_state(ctx.message.server)
         if not state.is_playing():
             await self.bot.say('Teď nic nehraju...')
@@ -248,6 +248,7 @@ class Music:
     @commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
     async def playing(self, ctx):
         """Shows info about the currently played song."""
+        await self.bot.send_typing(ctx.message.channel)
         state = self.get_voice_state(ctx.message.server)
         if state.current is None:
             await self.bot.say('Momentálně nic nehraju')
@@ -257,6 +258,7 @@ class Music:
     @commands.command(pass_context = True,no_pm=True,aliases=["fronta"])
     @commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
     async def queue(self,ctx):
+        await self.bot.send_typing(ctx.message.channel)
         server = ctx.message.server
         e = discord.Embed(colour = discord.Colour.red())
         e.set_author(name="Fronta")
@@ -289,5 +291,19 @@ class Music:
                 await self.bot.say("Ve frontě nic není!")
         else:
             await self.bot.say("Ve frontě nic není!")
+    @commands.command(pass_context=True, no_pm=True,aliases=["zfrontypryc"])
+    @commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
+    async def remove(self,ctx):
+        state = self.get_voice_state(ctx.message.server)
+        if not state.songs.empty():
+            try:
+                _ = state.songs.get()
+                del my_queue[ctx.message.server.id][1]
+                await self.bot.say("Úspěšně jsem odstranil song z fronty")
+            except Exception as e:
+                print(e)
+                return await self.bot.say("Písnička se z nějakého důvodu neodstranila")
+        else:
+            return await self.bot.say("Ale... Ve frontě nic není!")
 def setup(bot):
     bot.add_cog(Music(bot))

@@ -1,1 +1,0 @@
-{"Pepid#2491": {"amount": 10.0, "last_daily": "2018-12-15 13:06:04.787499"}, "Deb\u00edlek Bot#2887": {"amount": 110, "last_daily": "2018-11-28 16:49:02.383255"}, "NotSoBot#9555": {"amount": 0, "last_daily": "2018-11-30 20:33:07.470135"}, "Jakub Heicl#1812": {"amount": 1080.0, "last_daily": "2018-12-15 13:23:42.661611"}}

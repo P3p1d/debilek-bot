@@ -12,6 +12,7 @@ class Images:
 	@commands.command(pass_context=True,no_pm=True,aliases=['df','trojobal','obrazekvtrojobalu','deep-fry','deep_fry'])
 	@commands.cooldown(rate=1, per=15, type=commands.BucketType.user)
 	async def deepfry(self,ctx,*factor):
+		await self.bot.send_typing(ctx.message.channel)
 		if len(factor)>0 and len(factor)<2:
 			try:
 				factor=float(factor[0])
@@ -49,9 +50,11 @@ class Images:
 					os.remove(filename)
 					del response
 					break
+	
 	@commands.command(pass_context=True,no_pm=True,aliases=['impact','impactmeme','impakt','memetext','txt'])
 	@commands.cooldown(rate=1, per=15, type=commands.BucketType.user)
 	async def text(self,ctx,*text):
+		await self.bot.send_typing(ctx.message.channel)
 		if text == ():
 			await self.bot.say("Musíš mi dát nějaký text!")
 			return
@@ -85,7 +88,7 @@ class Images:
 					
 					width, height = im.size
 					draw = ImageDraw.Draw(im)					
-					fnt = ImageFont.truetype("impact.ttf", int(height/5))
+					fnt = ImageFont.truetype("./images/extras/impact.ttf", int(height/5))
 					current_h, pad = 0,1					
 					
 					for line in para:
@@ -112,6 +115,7 @@ class Images:
 	@commands.command(pass_context=True,no_pm=True,aliases=['cz','czflag','cz_flag'])
 	@commands.cooldown(rate=1, per=6, type=commands.BucketType.user)
 	async def czech(self,ctx):
+		await self.bot.send_typing(ctx.message.channel)
 		async for x in self.bot.logs_from(ctx.message.channel, limit = 15):
 			if x.attachments != []:
 				suffixes = ('.jpeg','.jpg','.png')
@@ -148,6 +152,7 @@ class Images:
 	@commands.command(pass_context=True,no_pm=True,aliases=['otoc'])
 	@commands.cooldown(rate=1, per=6, type=commands.BucketType.user)
 	async def rotate(self,ctx,*angle):
+		await self.bot.send_typing(ctx.message.channel)
 		if angle == ():
 			angle = 90
 		else:

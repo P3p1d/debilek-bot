@@ -9,7 +9,7 @@ from PIL import Image, ImageEnhance, ImageDraw, ImageFont
 class Images:
 	def __init__(self,bot):
 		self.bot=bot
-	@commands.command(pass_context=True,aliases=['df','trojobal','obrazekvtrojobalu','deep-fry','deep_fry'])
+	@commands.command(pass_context=True,no_pm=True,aliases=['df','trojobal','obrazekvtrojobalu','deep-fry','deep_fry'])
 	@commands.cooldown(rate=1, per=15, type=commands.BucketType.user)
 	async def deepfry(self,ctx,*factor):
 		if len(factor)>0 and len(factor)<2:
@@ -49,7 +49,7 @@ class Images:
 					os.remove(filename)
 					del response
 					break
-	@commands.command(pass_context=True,aliases=['impact','impactmeme','impakt','memetext','txt'])
+	@commands.command(pass_context=True,no_pm=True,aliases=['impact','impactmeme','impakt','memetext','txt'])
 	@commands.cooldown(rate=1, per=15, type=commands.BucketType.user)
 	async def text(self,ctx,*text):
 		if text == ():
@@ -109,7 +109,7 @@ class Images:
 					os.remove(filename)
 					del response
 					break
-	@commands.command(pass_context=True,aliases=['cz','czflag','cz_flag'])
+	@commands.command(pass_context=True,no_pm=True,aliases=['cz','czflag','cz_flag'])
 	@commands.cooldown(rate=1, per=6, type=commands.BucketType.user)
 	async def czech(self,ctx):
 		async for x in self.bot.logs_from(ctx.message.channel, limit = 15):
@@ -145,7 +145,7 @@ class Images:
 					os.remove(filename)					
 					del response
 					break
-	@commands.command(pass_context=True,aliases=['otoc'])
+	@commands.command(pass_context=True,no_pm=True,aliases=['otoc'])
 	@commands.cooldown(rate=1, per=6, type=commands.BucketType.user)
 	async def rotate(self,ctx,*angle):
 		if angle == ():

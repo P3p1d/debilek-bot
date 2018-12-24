@@ -12,6 +12,7 @@ class Images:
 	@commands.command(pass_context=True,aliases=['df','trojobal','obrazekvtrojobalu','deep-fry','deep_fry'])
 	@commands.cooldown(rate=1, per=15, type=commands.BucketType.user)
 	async def deepfry(self,ctx,*factor):
+		await self.bot.send_typing(ctx.message.channel)
 		if len(factor)>0 and len(factor)<2:
 			try:
 				factor=float(factor[0])

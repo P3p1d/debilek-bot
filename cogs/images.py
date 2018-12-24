@@ -9,10 +9,9 @@ from PIL import Image, ImageEnhance, ImageDraw, ImageFont
 class Images:
 	def __init__(self,bot):
 		self.bot=bot
-	@commands.command(pass_context=True,no_pm=True,aliases=['df','trojobal','obrazekvtrojobalu','deep-fry','deep_fry'])
+	@commands.command(pass_context=True,aliases=['df','trojobal','obrazekvtrojobalu','deep-fry','deep_fry'])
 	@commands.cooldown(rate=1, per=15, type=commands.BucketType.user)
 	async def deepfry(self,ctx,*factor):
-		await self.bot.send_typing(ctx.message.channel)
 		if len(factor)>0 and len(factor)<2:
 			try:
 				factor=float(factor[0])
@@ -50,11 +49,9 @@ class Images:
 					os.remove(filename)
 					del response
 					break
-	
-	@commands.command(pass_context=True,no_pm=True,aliases=['impact','impactmeme','impakt','memetext','txt'])
+	@commands.command(pass_context=True,aliases=['impact','impactmeme','impakt','memetext','txt'])
 	@commands.cooldown(rate=1, per=15, type=commands.BucketType.user)
 	async def text(self,ctx,*text):
-		await self.bot.send_typing(ctx.message.channel)
 		if text == ():
 			await self.bot.say("Musíš mi dát nějaký text!")
 			return
@@ -88,7 +85,7 @@ class Images:
 					
 					width, height = im.size
 					draw = ImageDraw.Draw(im)					
-					fnt = ImageFont.truetype("./images/extras/impact.ttf", int(height/5))
+					fnt = ImageFont.truetype("impact.ttf", int(height/5))
 					current_h, pad = 0,1					
 					
 					for line in para:
@@ -112,10 +109,9 @@ class Images:
 					os.remove(filename)
 					del response
 					break
-	@commands.command(pass_context=True,no_pm=True,aliases=['cz','czflag','cz_flag'])
+	@commands.command(pass_context=True,aliases=['cz','czflag','cz_flag'])
 	@commands.cooldown(rate=1, per=6, type=commands.BucketType.user)
 	async def czech(self,ctx):
-		await self.bot.send_typing(ctx.message.channel)
 		async for x in self.bot.logs_from(ctx.message.channel, limit = 15):
 			if x.attachments != []:
 				suffixes = ('.jpeg','.jpg','.png')
@@ -149,10 +145,9 @@ class Images:
 					os.remove(filename)					
 					del response
 					break
-	@commands.command(pass_context=True,no_pm=True,aliases=['otoc'])
+	@commands.command(pass_context=True,aliases=['otoc'])
 	@commands.cooldown(rate=1, per=6, type=commands.BucketType.user)
 	async def rotate(self,ctx,*angle):
-		await self.bot.send_typing(ctx.message.channel)
 		if angle == ():
 			angle = 90
 		else:
@@ -180,6 +175,53 @@ class Images:
 					im.thumbnail(size)
 					im = im.rotate(angle,expand=1)
 					im.save(filename,"JPEG",quality = 90)
+					await self.bot.send_file(ctx.message.channel,filename)
+					os.remove(filename)					
+					del response
+					break
+	@commands.command(pass_context=True,aliases=['meme1','jetoto','isthis'])
+	@commands.cooldown(rate=1, per=10, type=commands.BucketType.user)
+	async def isthisa(self,ctx,*args):
+		await self.bot.send_typing(ctx.message.channel)
+		if args == ():
+			await self.bot.say("Musíš mi dát nějaký text!")
+			return
+		text = ' '.join(args)
+		async for x in self.bot.logs_from(ctx.message.channel, limit = 15):
+			if x.attachments != []:
+				suffixes = ('.jpeg','.jpg','.png')
+				if x.attachments[0]['url'].endswith(suffixes):
+					filename = x.attachments[0]['url'].split('/')
+					filename = filename[-1]
+					response = requests.get(x.attachments[0]['url'], stream=True)
+					filename = ctx.message.server.id + filename
+					with open(filename, 'wb') as out_file:
+						shutil.copyfileobj(response.raw, out_file)
+					
+					im = Image.open(filename).convert('RGBA')
+					width, height = im.size
+					if width > 2100 or height > 2100:
+						await self.bot.say("Obrázek je moc velký")
+						im.close()
+						os.remove(filename)
+						del response
+						return
+					size=200,300
+									
+					im.thumbnail(size,Image.ANTIALIAS)
+					background = Image.open("./images/extras/meme_template3.jpg").convert('RGBA')
+					background.paste(im,(650,80),im)
+					width,height=background.size
+					fnt = ImageFont.truetype("./images/extras/arial.ttf", int(height/15))
+					draw = ImageDraw.Draw(background)	
+					tw,th=50,700
+					draw.text((tw-2, th-2), text, font=fnt,fill="black")
+					draw.text((tw+2, th-2), text, font=fnt,fill="black")
+					draw.text((tw-2, th+2), text, font=fnt,fill="black")
+					draw.text((tw+2, th+2), text, font=fnt,fill="black")
+					draw.text((50,700),text, font=fnt,fill="white")
+					background =background.convert(mode="RGB")
+					background.save(filename,"JPEG",quality = 90)
 					await self.bot.send_file(ctx.message.channel,filename)
 					os.remove(filename)					
 					del response

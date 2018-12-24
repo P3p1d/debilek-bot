@@ -22,6 +22,7 @@ class NASA:
 	@commands.command(pass_context=True, aliases = ["apod","space"])
 	@commands.cooldown(rate=2, per=10, type=commands.BucketType.user)
 	async def nasa(self,ctx):
+		await self.bot.send_typing(ctx.message.channel)
 		url="https://api.nasa.gov/planetary/apod"
 		params={'date':self.getdate(),"api_key":"DEMO_KEY"}
 		r = requests.Session().get(url=url,params = params)

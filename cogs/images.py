@@ -8,22 +8,7 @@ from PIL import Image, ImageEnhance, ImageDraw, ImageFont
 class Images:
 	def __init__(self,bot):
 		self.bot=bot
-<<<<<<< HEAD
 	async def getimage(self,ctx):
-=======
-	@commands.command(pass_context=True,aliases=['df','trojobal','obrazekvtrojobalu','deep-fry','deep_fry'])
-	@commands.cooldown(rate=1, per=15, type=commands.BucketType.user)
-	async def deepfry(self,ctx,*factor):
-		await self.bot.send_typing(ctx.message.channel)
-		if len(factor)>0 and len(factor)<2:
-			try:
-				factor=float(factor[0])
-			except:
-				await self.bot.say("To as není úplně číslo, co?")
-				return
-		if factor == ():
-			factor = 7.0
->>>>>>> de0aefc136268e7304fb7742d207888e213a416c
 		async for x in self.bot.logs_from(ctx.message.channel, limit = 15):
 			if x.attachments != []:
 				suffixes = ('.jpeg','.jpg','.png')
@@ -113,15 +98,13 @@ class Images:
 			return await self.bot.say("Žádný obrázek ve správné velikosti se mi nepodařilo najít :cry:")
 		im = im.convert(mode="RGB")
 		im.thumbnail(size)
-		os.chdir('./images')
-		cz = Image.open("czech_flag.png")
+		cz = Image.open("./images/czech_flag.png")
 		cz=cz.resize((im.size)).convert('RGB')
 		im=Image.blend(im,cz,0.3)
 		
 		im.save(filename,"JPEG",quality = 90)
 		await self.bot.send_file(ctx.message.channel,filename)
 		os.remove(filename)
-		os.chdir('..')
 		os.remove(filename)					
 
 	@commands.command(pass_context=True,aliases=['otoc'])

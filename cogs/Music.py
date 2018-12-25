@@ -154,7 +154,7 @@ class Music:
             fmt = 'Chybka se vyskytla: ```py\n{}: {}\n```'
             await self.bot.send_message(ctx.message.channel, fmt.format(type(e).__name__, e))
         else:
-            #player.volume = 0.2
+            player.volume = 0.2
             entry = VoiceEntry(ctx.message, player)
             await self.bot.say('Přidáno do fronty ' + str(entry))
             if str(ctx.message.server.id) not in my_queue:              #pridani do vlastni fronty protoze pres asyncio.Queue() nejde iterovat rip

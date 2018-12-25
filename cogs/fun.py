@@ -31,6 +31,7 @@ class Fun:
 			if number > 100:
 				await self.bot.say('V klidu s tou čistkou, limit je 100 zpráv')
 				return
+			number+=1
 			async for x in self.bot.logs_from(ctx.message.channel, limit = number):
 				mgs.append(x)
 			await self.bot.delete_messages(mgs)

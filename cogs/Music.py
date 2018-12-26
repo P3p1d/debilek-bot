@@ -52,7 +52,7 @@ class VoiceState:
             self.player.stop()
     def toggle_next(self,ctx):
         try:
-            del my_queue[str(ctx.message.server.id)][0]
+            del my_queue[str(ctx.message.server.id)]["player"][0]
         except:
             pass
         self.bot.loop.call_soon_threadsafe(self.play_next_song.set)
@@ -154,14 +154,18 @@ class Music:
             fmt = 'Chybka se vyskytla: ```py\n{}: {}\n```'
             await self.bot.send_message(ctx.message.channel, fmt.format(type(e).__name__, e))
         else:
-            #player.volume = 0.2
             entry = VoiceEntry(ctx.message, player)
             await self.bot.say('Přidáno do fronty ' + str(entry))
             if str(ctx.message.server.id) not in my_queue:              #pridani do vlastni fronty protoze pres asyncio.Queue() nejde iterovat rip
-                my_queue[str(ctx.message.server.id)] = [player,]
+                my_queue[str(ctx.message.server.id)] = {"player":[player,],"volume":0.2}
             else:
-                my_queue[str(ctx.message.server.id)].append(player)
+                my_queue[str(ctx.message.server.id)]["player"].append(player)
             await state.songs.put(entry)
+            try:
+                player.volume = my_queue[str(ctx.message.server.id)]["volume"]
+            except Exception as e:
+                raise e
+                player.volume=0.2
 
     @commands.command(pass_context=True, no_pm=True,aliases=["hlasitost"])
     @commands.cooldown(rate=1, per=2, type=commands.BucketType.user)
@@ -175,6 +179,7 @@ class Music:
         if state.is_playing():
             player = state.player
             player.volume = value / 100
+            my_queue[str(ctx.message.server.id)]["volume"]=player.volume
             await self.bot.say('Hlasitost nastavena na {:.0%}'.format(player.volume))
     @commands.command(pass_context=True, no_pm=True,aliases=["pauza"])
     async def pause(self, ctx):
@@ -291,23 +296,6 @@ class Music:
                 await self.bot.say("Ve frontě nic není!")
         else:
             await self.bot.say("Ve frontě nic není!")
-    @commands.command(pass_context=True, no_pm=True,aliases=["zfrontypryc"])
-    @commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
-    async def remove(self,ctx):
-        state = self.get_voice_state(ctx.message.server)
-        if not state.songs.empty():
-            voter = ctx.message.author
-            if voter == state.current.requester:
-                try:
-                    _ = state.songs.get()
-                    del my_queue[ctx.message.server.id][1]
-                    await self.bot.say("Úspěšně jsem odstranil song z fronty")
-                except Exception as e:
-                    print(e)
-                    return await self.bot.say("Písnička se z nějakého důvodu neodstranila")
-            else:
-                return await self.bot.say("Ale.. tuto písničku si nepřidal ty!")
-        else:
-            return await self.bot.say("Ale... Ve frontě nic není!")
+
 def setup(bot):
     bot.add_cog(Music(bot))

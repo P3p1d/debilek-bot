@@ -271,7 +271,7 @@ class Music:
                 i = 0
                 duration = 0
                 error = False
-                for x in my_queue[server.id]:
+                for x in my_queue[server.id]["player]:
                     try:    
                         i+=1
                         duration += x.duration

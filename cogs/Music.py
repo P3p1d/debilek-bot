@@ -161,10 +161,12 @@ class Music:
             else:
                 my_queue[str(ctx.message.server.id)]["player"].append(player)
             await state.songs.put(entry)
+            
             try:
                 player.volume = my_queue[str(ctx.message.server.id)]["volume"]
-            except:
-                player.volume=0.2
+            except Exception as e:
+                raise e
+                player.volume=0.45
 
     @commands.command(pass_context=True, no_pm=True,aliases=["hlasitost"])
     @commands.cooldown(rate=1, per=2, type=commands.BucketType.user)
@@ -259,6 +261,8 @@ class Music:
         else:
             skip_count = len(state.skip_votes)
             await self.bot.say('Právě hraju {} [přeskočení: {}/3]'.format(state.current, skip_count))
+   
+
     @commands.command(pass_context = True,no_pm=True,aliases=["fronta"])
     @commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
     async def queue(self,ctx):
@@ -271,7 +275,7 @@ class Music:
                 i = 0
                 duration = 0
                 error = False
-                for x in my_queue[server.id]["player]:
+                for x in my_queue[server.id]["player"]:
                     try:    
                         i+=1
                         duration += x.duration

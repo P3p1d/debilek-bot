@@ -163,8 +163,7 @@ class Music:
             await state.songs.put(entry)
             try:
                 player.volume = my_queue[str(ctx.message.server.id)]["volume"]
-            except Exception as e:
-                raise e
+            except:
                 player.volume=0.2
 
     @commands.command(pass_context=True, no_pm=True,aliases=["hlasitost"])

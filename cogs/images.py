@@ -92,6 +92,7 @@ class Images:
 	@commands.command(pass_context=True,aliases=['cz','czflag','cz_flag'])
 	@commands.cooldown(rate=1, per=6, type=commands.BucketType.user)
 	async def czech(self,ctx):
+		await self.bot.send_typing(ctx.message.channel)
 		try:
 			im,filename=await self.getimage(ctx)
 		except TypeError:
@@ -110,6 +111,7 @@ class Images:
 	@commands.command(pass_context=True,aliases=['otoc'])
 	@commands.cooldown(rate=1, per=6, type=commands.BucketType.user)
 	async def rotate(self,ctx,*angle):
+		await self.bot.send_typing(ctx.message.channel)
 		if angle == ():
 			angle = 90
 		else:
@@ -118,7 +120,6 @@ class Images:
 			im,filename=await self.getimage(ctx)
 		except TypeError:
 			return await self.bot.say("Žádný obrázek ve správné velikosti se mi nepodařilo najít :cry:")
-		size = 500,500
 		im = im.convert(mode="RGB")
 		im.thumbnail(size)
 		im = im.rotate(angle,expand=1)
@@ -172,7 +173,7 @@ class Images:
 		size=310,580
 		#im.thumbnail(size,Image.ANTIALIAS)
 		im=im.resize(size,resample=Image.LANCZOS)
-		im=im.rotate(-7.8,expand=1)	
+		im=im.rotate(-7.7,expand=1)	
 		canvas.paste(im,(565,625),im)
 		canvas.paste(foreground,(0,0),foreground)		
 		canvas=canvas.convert(mode="RGB")	
@@ -209,6 +210,72 @@ class Images:
 		im=im.resize(size,resample=Image.LANCZOS).convert('RGBA')
 		background.paste(im,(480,300),im)
 		background.save(filename,"JPEG",quality = 90)
+		await self.bot.send_file(ctx.message.channel,filename)
+		os.remove(filename)
+	
+	@commands.command(pass_context=True,aliases=['meme5'])
+	@commands.cooldown(rate=1, per=6, type=commands.BucketType.user)
+	async def bart(self,ctx,*text):
+		await self.bot.send_typin(ctx.message.channel)
+		if text == ():
+			return await self.bot.say("Musíš mi dát nějaký text!")
+		text=" ".join(text)
+		if len(text)>25:
+			return await self.bot.say("Text je příliš dlouhý, maximum je 25 písmen.")
+		im=Image.open("./images/extras/meme_template5.jpg")
+		filename=f"bart{ctx.message.server.id}.jpg"
+		width,height=im.size
+		fnt = ImageFont.truetype("./images/extras/arial.ttf", int(height/28))
+		draw = ImageDraw.Draw(im)
+		w, h = draw.textsize(text, font=fnt)
+		tw,th=width-w,860
+		draw.text(((tw/2)-2,th-2), text, font=fnt,fill="black")
+		draw.text(((tw/2)+2,th-2), text, font=fnt,fill="black")
+		draw.text(((tw/2)-2,th+2), text, font=fnt,fill="black")
+		draw.text(((tw/2)+2,th+2), text, font=fnt,fill="black")
+		draw.text(((tw/2,th)),text, font=fnt,fill="white")
+		im.save(filename,"JPEG",quality = 90)
+		await self.bot.send_file(ctx.message.channel,filename)
+		os.remove(filename)
+	@commands.command(pass_context=True,aliases=['meme6','vocko','nottoday'])
+	@commands.cooldown(rate=1, per=6, type=commands.BucketType.user)
+	async def moe(self,ctx):
+		await self.bot.send_typing(ctx.message.channel)
+		await self.bot.send_file(ctx.message.channel,"./images/extras/meme_template6.jpg")
+
+	@commands.command(pass_context=True,aliases=['meme7','nabozenstvi','phone2'])
+	@commands.cooldown(rate=1, per=6, type=commands.BucketType.user)
+	async def religion(self,ctx):
+		await self.bot.send_typing(ctx.message.channel)
+		try:
+			back,filename=await self.getimage(ctx)
+		except TypeError:
+			return await self.bot.say("Žádný obrázek ve správné velikosti se mi nepodařilo najít :cry:")
+		size=541,423
+		im=Image.open("./images/extras/meme_template7.png").convert('RGBA')
+		canvas = Image.new('RGBA', im.size, (255,255,255,0))
+		back=back.resize(size,resample=Image.LANCZOS).convert('RGBA')
+		width,height=im.size
+		canvas.paste(back,(0,230),back)
+		canvas.paste(im,(0,0),im)
+		canvas=canvas.convert(mode="RGB")	
+		canvas.save(filename,"JPEG",quality = 90)
+		await self.bot.send_file(ctx.message.channel,filename)
+		os.remove(filename)
+	@commands.command(pass_context=True,aliases=['meme8'])
+	@commands.cooldown(rate=1, per=6, type=commands.BucketType.user)
+	async def disability(self,ctx):	
+		await self.bot.send_typing(ctx.message.channel)
+		try:
+			front,filename=await self.getimage(ctx)
+		except TypeError:
+			return await self.bot.say("Žádný obrázek ve správné velikosti se mi nepodařilo najít :cry:")
+		size=235,240
+		im = Image.open("./images/extras/meme_template10.jpg").convert('RGBA')
+		front = front.resize(size,resample=Image.LANCZOS).convert('RGBA')
+		im.paste(front,(520,325),front)
+		im=im.convert('RGB')
+		im.save(filename,"JPEG",quality = 90)
 		await self.bot.send_file(ctx.message.channel,filename)
 		os.remove(filename)
 def setup(bot):

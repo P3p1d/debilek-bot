@@ -28,7 +28,7 @@ bot = discord.Client()
 bot = commands.Bot(command_prefix=get_prefix)
 bot.remove_command('help')
 #()  []  {} `
-init_extensions = ['cogs.fun','cogs.wiki','cogs.help','cogs.money','cogs.error_handler','cogs.images','cogs.Music','cogs.ascii_art','cogs.nasa']
+init_extensions = ['cogs.fun','cogs.wiki','cogs.help','cogs.money','cogs.error_handler','cogs.images','cogs.Music','cogs.ascii_art','cogs.nasa','cogs.updatedbl']
 
 if __name__ == '__main__':
     for extension in init_extensions:

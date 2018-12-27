@@ -9,9 +9,9 @@ import os
 
 class DiscordBotsOrgAPI:
     """Handles interactions with the discordbots.org API"""
-    def __init__(self, bot):
+    def __init__(self, bot, token):
         self.bot = bot
-        self.token = os.environ["dblTOKEN"]  #  set this to your DBL token
+        self.token = token  #  set this to your DBL token
         self.dblpy = dbl.Client(self.bot, self.token)
         self.bot.loop.create_task(self.update_stats())
 
@@ -27,4 +27,4 @@ class DiscordBotsOrgAPI:
 
 
 def setup(bot):
-    bot.add_cog(DiscordBotsOrgAPI(bot))
+    bot.add_cog(DiscordBotsOrgAPI(bot,os.environ["dblTOKEN"]))

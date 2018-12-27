@@ -72,7 +72,7 @@ async def quit(ctx):
         await bot.say("Tak čau!")
         await bot.logout()
 #------------------------------------------------------------------
-url = f"https://discordbots.org/api/bots/{bot.user.id}/stats"
+url = f"https://discordbots.org/api/bots/485115987000295435/stats"
 payload = {"server_count": str(len(bot.guilds))}
 headers = {"Authorization": os.environ["dblTOKEN"]}
 r = requests.post(url, data=payload, headers=headers)

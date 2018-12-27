@@ -76,7 +76,7 @@ url = f"https://discordbots.org/api/bots/{bot.user.id}/stats"
 payload = {"server_count": str(len(bot.guilds))}
 headers = {"Authorization": os.environ["dblTOKEN"]}
 r = requests.post(url, data=payload, headers=headers)
-await print("[+] Guild change detected, posting guild count to DBL")
+print("[+] Guild change detected, posting guild count to DBL")
 #-------------------------------------------------------------------
 @bot.event
 async def on_ready():

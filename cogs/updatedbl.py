@@ -9,7 +9,7 @@ import os
 
 class DiscordBotsOrgAPI:
     """Handles interactions with the discordbots.org API"""
-
+    dbl_token=os.environ["dblTOKEN"]
     def __init__(self, bot):
         self.bot = bot
         self.token = 'dbl_token'  #  set this to your DBL token
@@ -24,7 +24,7 @@ class DiscordBotsOrgAPI:
                 await self.dblpy.post_server_count()
             except Exception as e:
                print('Failed to post server count\n{}: {}'.format(type(e).__name__, e))
-            await asyncio.sleep(1800)
+            await asyncio.sleep(3600)
 
 
 def setup(bot):

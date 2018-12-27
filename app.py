@@ -8,6 +8,7 @@ import discord
 import aiohttp
 from discord import Game
 from discord.ext import commands
+import requests
 
 def get_prefix(bot, message):
     """A callable Prefix for our bot. This could be edited to allow per server prefixes."""
@@ -28,7 +29,7 @@ bot = discord.Client()
 bot = commands.Bot(command_prefix=get_prefix)
 bot.remove_command('help')
 #()  []  {} `
-init_extensions = ['cogs.fun','cogs.wiki','cogs.help','cogs.money','cogs.error_handler','cogs.images','cogs.Music','cogs.ascii_art','cogs.nasa','cogs.updatedbl']
+init_extensions = ['cogs.fun','cogs.wiki','cogs.help','cogs.money','cogs.error_handler','cogs.images','cogs.Music','cogs.ascii_art','cogs.nasa']
 
 if __name__ == '__main__':
     for extension in init_extensions:
@@ -70,7 +71,13 @@ async def quit(ctx):
     else:
         await bot.say("Tak čau!")
         await bot.logout()
-
+#------------------------------------------------------------------
+url = f"https://discordbots.org/api/bots/{bot.user.id}/stats"
+payload = {"server_count": str(len(bot.guilds))}
+headers = {"Authorization": os.environ["dblTOKEN"]}
+r = requests.post(url, data=payload, headers=headers)
+await print("[+] Guild change detected, posting guild count to DBL")
+#-------------------------------------------------------------------
 @bot.event
 async def on_ready():
     print('Online jako:')

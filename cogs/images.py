@@ -118,6 +118,7 @@ class Images:
 			im,filename=await self.getimage(ctx)
 		except TypeError:
 			return await self.bot.say("Žádný obrázek ve správné velikosti se mi nepodařilo najít :cry:")
+		size = 500,500
 		im = im.convert(mode="RGB")
 		im.thumbnail(size)
 		im = im.rotate(angle,expand=1)

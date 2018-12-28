@@ -8,10 +8,11 @@ import discord
 import aiohttp
 from discord import Game
 from discord.ext import commands
+import requests
 
 def get_prefix(bot, message):
     """A callable Prefix for our bot. This could be edited to allow per server prefixes."""
-    prefixes = ['§','debile ']
+    prefixes = ['§','debile ','Debile ']
     #if not message.server:
     #    # pouze vykricnik mimo server
     #    return '!'
@@ -59,6 +60,7 @@ async def info(ctx):
     em.add_field(name="Knihovna", value=f"discord.py")
     em.add_field(name="Pozvěte Debílka na další server!", value=f"[Zde](https://discordapp.com/oauth2/authorize?client_id={bot.user.id}&scope=bot&permissions=268905542)")
     em.add_field(name="Více informací o Debílkovi", value=f"[Zde](https://debilekbot.glitch.me/)",inline=False)
+    em.add_field(name="Nezapomeňte pro Debílka hlasovat!", value=f"[Zde](https://discordbots.org/bot/485115987000295435)",inline=False)
     em.set_footer(text="DebílekBot | jede na discord.py")
     await bot.say(embed=em)
 
@@ -70,7 +72,13 @@ async def quit(ctx):
     else:
         await bot.say("Tak čau!")
         await bot.logout()
-
+#------------------------------------------------------------------
+url = f"https://discordbots.org/api/bots/485115987000295435/stats"
+payload = {"server_count": str(len(bot.servers))}
+headers = {"Authorization": os.environ["dblTOKEN"]}
+r = requests.post(url, data=payload, headers=headers)
+print("[+] Guild change detected, posting guild count to DBL")
+#-------------------------------------------------------------------
 @bot.event
 async def on_ready():
     print('Online jako:')

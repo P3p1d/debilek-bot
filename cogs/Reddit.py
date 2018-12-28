@@ -3,6 +3,7 @@ from discord.ext import commands
 import praw
 import random
 from cachetools import cached, TTLCache
+import os
 
 class Reddit:
 	cache=TTLCache(maxsize=30, ttl=600)
@@ -45,4 +46,4 @@ class Reddit:
 		e=self.embedbuild(s)
 		await self.bot.say(embed=e)
 def setup(bot):
-	bot.add_cog(Reddit(bot,"b66yGIuXeWbWaQ","aPRd4aFZv8OsRy180ItnpA1h1s4","debilek by p3p1d"))
+	bot.add_cog(Reddit(bot,os.envrion["clientid"],os.envrion["clientsecret"],os.envrion["useragent"]))

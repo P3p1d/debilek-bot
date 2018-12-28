@@ -60,6 +60,7 @@ async def info(ctx):
     em.add_field(name="Knihovna", value=f"discord.py")
     em.add_field(name="Pozvěte Debílka na další server!", value=f"[Zde](https://discordapp.com/oauth2/authorize?client_id={bot.user.id}&scope=bot&permissions=268905542)")
     em.add_field(name="Více informací o Debílkovi", value=f"[Zde](https://debilekbot.glitch.me/)",inline=False)
+    em.add_field(name="Nezapomeňte pro Debílka hlasovat!", value=f"[Zde](https://discordbots.org/bot/485115987000295435)",inline=False)
     em.set_footer(text="DebílekBot | jede na discord.py")
     await bot.say(embed=em)
 

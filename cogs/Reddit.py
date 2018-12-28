@@ -46,4 +46,4 @@ class Reddit:
 		e=self.embedbuild(s)
 		await self.bot.say(embed=e)
 def setup(bot):
-	bot.add_cog(Reddit(bot,os.envrion["clientid"],os.envrion["clientsecret"],os.envrion["useragent"]))
+	bot.add_cog(Reddit(bot,os.environ["clientid"],os.environ["clientsecret"],os.environ["useragent"]))

@@ -6,7 +6,7 @@ from cachetools import cached, TTLCache
 import os
 
 class Reddit:
-	cache=TTLCache(maxsize=30, ttl=600)
+	cache=TTLCache(maxsize=30, ttl=1800)
 	def __init__(self,bot,client_id,client_secret,user_agent):
 		self.bot = bot
 		self.reddit=praw.Reddit(client_id=client_id,

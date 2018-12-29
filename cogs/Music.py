@@ -177,6 +177,8 @@ class Music:
             return await self.bot.say("Záporná hlasitost? Hmmm....")
         if value==0:
             return await self.bot.say(f"Hlasitost: {state.player.volume*100}%")
+        if value > 200:
+            return await self.bot.say("Maximální hlasitost je 200%")
         if state.is_playing():
             player = state.player
             player.volume = value / 100

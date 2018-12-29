@@ -6,7 +6,7 @@ from cachetools import cached, TTLCache
 import os
 
 class Reddit:
-	cache=TTLCache(maxsize=30, ttl=1800)
+	cache=TTLCache(maxsize=50, ttl=1800)
 	def __init__(self,bot,client_id,client_secret,user_agent):
 		self.bot = bot
 		self.reddit=praw.Reddit(client_id=client_id,
@@ -15,7 +15,7 @@ class Reddit:
 
 	@cached(cache)
 	def getsubmission(self,subreddit,post_to_pick):
-		memes_submissions = self.reddit.subreddit(subreddit).hot(limit=30)
+		memes_submissions = self.reddit.subreddit(subreddit).hot(limit=50)
 		for i in range(0, post_to_pick):
 			submission = next(x for x in memes_submissions if not x.stickied)
 		return submission
@@ -34,7 +34,7 @@ class Reddit:
 	@commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
 	async def meme(self,ctx):
 		await self.bot.send_typing(ctx.message.channel)
-		post_to_pick = random.randint(1, 30)
+		post_to_pick = random.randint(1, 51)
 		s=self.getsubmission("dankmemes",post_to_pick)
 		e=self.embedbuild(s)
 		await self.bot.say(embed=e)
@@ -43,7 +43,7 @@ class Reddit:
 	@commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
 	async def agrmeme(self,ctx):
 		await self.bot.send_typing(ctx.message.channel)
-		post_to_pick = random.randint(1, 30)
+		post_to_pick = random.randint(1, 51)
 		s=self.getsubmission("Agraelus",post_to_pick)
 		e=self.embedbuild(s)
 		await self.bot.say(embed=e)

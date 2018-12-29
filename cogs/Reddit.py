@@ -35,7 +35,7 @@ class Reddit:
 	async def meme(self,ctx):
 		await self.bot.send_typing(ctx.message.channel)
 		post_to_pick = random.randint(1, 30)
-		s=self.getsubmission("memes+dankmemes",post_to_pick)
+		s=self.getsubmission("dankmemes",post_to_pick)
 		e=self.embedbuild(s)
 		await self.bot.say(embed=e)
 

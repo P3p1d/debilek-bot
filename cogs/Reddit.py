@@ -17,7 +17,7 @@ class Reddit:
 	def getsubmission(self,subreddit,post_to_pick):
 		memes_submissions = self.reddit.subreddit(subreddit).hot(limit=50)
 		for i in range(0, post_to_pick+1):
-			submission = next(x for x in memes_submissions if x.stickied)
+			submission = next(x for x in memes_submissions if not x.stickied)
 		return submission
 
 	def embedbuild(self,s):

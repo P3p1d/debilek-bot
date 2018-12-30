@@ -26,16 +26,17 @@ class Fun:
 	@commands.cooldown(rate=1, per=10, type=commands.BucketType.user)
 	@has_permissions(manage_messages=True)
 	async def purge(self,ctx, number):	
-			mgs = [] #Empty list to put all the messages in the log
-			number = int(number) #Converting the amount of messages to delete to an integer
-			if number > 100:
-				await self.bot.say('V klidu s tou čistkou, limit je 100 zpráv')
-				return
+		await self.bot.send_typing(ctx.message.channel)
+		mgs = [] #Empty list to put all the messages in the log
+		number = int(number) #Converting the amount of messages to delete to an integer
+		if number > 100:
+			return await self.bot.say('V klidu s tou čistkou, limit je 100 zpráv')
+		if number!=100:
 			number+=1
-			async for x in self.bot.logs_from(ctx.message.channel, limit = number):
-				mgs.append(x)
-			await self.bot.delete_messages(mgs)
-			await self.bot.say(":put_litter_in_its_place: x"+str(number-1))
+		async for x in self.bot.logs_from(ctx.message.channel, limit = number):
+			mgs.append(x)
+		await self.bot.delete_messages(mgs)
+		await self.bot.say(":put_litter_in_its_place: x"+str(number-1))
 
 	@commands.command(pass_context=True)
 	@commands.cooldown(rate=1, per=5, type=commands.BucketType.user)

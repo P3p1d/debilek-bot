@@ -70,7 +70,6 @@ async def quit(ctx):
         await bot.say("Tohle nemůžeš!")
         return
     else:
-        task.cancel()
         await bot.say("Tak čau!")
         await bot.logout()
         
@@ -90,6 +89,4 @@ async def on_ready():
     print(bot.user.name)
     print(bot.user.id)
     print('-'*len(bot.user.id))
-    loop = asyncio.get_event_loop()
-    task = loop.create_task(newhra(bot))
 bot.run(TOKEN, bot = True)

@@ -27,7 +27,7 @@ class CommandErrorHandler:
 		if isinstance(error,commands.CommandOnCooldown):
 			return await self.bot.send_message(channel, f"{ctx.message.author.mention} v klidu bejku! Ještě musíš {error.retry_after:.1f} sekund vychladnout.")
 		elif isinstance(error,commands.CommandNotFound):
-			return await self.bot.send_message(channel,"Tenhle příkaz neznám :disappointed_relieved: \nZkus §help")
+			return await self.bot.send_message(channel,"Tenhle příkaz neznám :disappointed_relieved: \nZkus !help")
 		elif isinstance(error,commands.BadArgument):
 			return await self.bot.send_message(channel,"Asi překlep?")
 		elif isinstance(error,commands.MissingRequiredArgument):
@@ -40,8 +40,10 @@ class CommandErrorHandler:
 			return await self.bot.send_message(channel,"Hele, tady v intimču DMs tyhle příkazy používat nemůžeš...")
 		elif isinstance(error,errors.HTTPException):
 			return await self.bot.send_message(channel,"Odehrála se chyba v matrixu. Nebo prostě někdo cestou zakopl o kabel.")
-		elif "Missing Permissions" in str(error):
-			return await self.bot.send_message(channel,"Já nevím, jestli tohle úplně jako můžu udělat, koneckonců na to nemám oprávnění")
+		elif isinstance(error,commands.MissingPermissions):
+			return await self.bot.send_message(channel,"Na tohle bohužel nemám oprávnění")
+		elif isinstance(error,errors.Forbidden):
+			return await self.bot.send_message(channel,"Někdo mi odepřel přístup na internet... hmmm")
 		"""elif isinstance(error,commands.CommandInvokeError):
 			return await self.bot.send_message(channel,"Něco je špatně...")"""
 		print('Ignoring exception in command {}:'.format(ctx.command), file=sys.stderr)

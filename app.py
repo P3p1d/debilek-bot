@@ -84,9 +84,9 @@ async def newhra(bot):
     
 @bot.event
 async def on_ready():
-    global task
     print('Online jako:')
     print(bot.user.name)
     print(bot.user.id)
     print('-'*len(bot.user.id))
+    await newhra(bot)
 bot.run(TOKEN, bot = True)

@@ -34,7 +34,7 @@ class Reddit:
 	@commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
 	async def meme(self,ctx):
 		await self.bot.send_typing(ctx.message.channel)
-		post_to_pick = random.randint(1, 51)
+		post_to_pick = random.randint(1, 50)
 		s=self.getsubmission("dankmemes",post_to_pick)
 		e=self.embedbuild(s)
 		await self.bot.say(embed=e)
@@ -43,7 +43,7 @@ class Reddit:
 	@commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
 	async def agrmeme(self,ctx):
 		await self.bot.send_typing(ctx.message.channel)
-		post_to_pick = random.randint(1, 51)
+		post_to_pick = random.randint(1, 50)
 		s=self.getsubmission("Agraelus",post_to_pick)
 		e=self.embedbuild(s)
 		await self.bot.say(embed=e)

@@ -77,7 +77,7 @@ class Economy:
 			return await self.bot.say("Jeden z vás si ještě nezaložil účet")
 		
 		if chance>=5:
-			stolen = random.randrange(0,501,10)
+			stolen = random.randrange(0,600,10)
 			if acc["amount"]-stolen<0:
 				stolen = acc["amount"]
 			if acc["amount"]<=0:
@@ -86,7 +86,7 @@ class Economy:
 			self.d[server].update_one({"name":str(ctx.message.author)},{"$set":{"amount":aut["amount"]+stolen}})
 			await self.bot.say(f"{ctx.message.author.display_name} ukradl {user.display_name} {stolen}:dollar:!")
 		else:
-			stolen = random.randrange(100,551,10)
+			stolen = random.randrange(50,550,10)
 			self.d[server].update_one({"name":str(ctx.message.author)},{"$set":{"amount":aut["amount"]-stolen}})
 			await self.bot.say(f":oncoming_police_car:{ctx.message.author.display_name} načapala policie při činu! Pokuta činí {stolen} šekelů")
 

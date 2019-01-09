@@ -40,8 +40,6 @@ class CommandErrorHandler:
 			return await self.bot.send_message(channel,"Hele, tady v intimču DMs tyhle příkazy používat nemůžeš...")
 		elif isinstance(error,errors.HTTPException):
 			return await self.bot.send_message(channel,"Odehrála se chyba v matrixu. Nebo prostě někdo cestou zakopl o kabel.")
-		elif isinstance(error,MissingPermissions):
-			return await self.bot.send_message(channel,"Na tohle bohužel nemám oprávnění")
 		elif isinstance(error,errors.Forbidden):
 			return await self.bot.send_message(channel,"Někdo mi odepřel přístup na internet... hmmm")
 		"""elif isinstance(error,commands.CommandInvokeError):

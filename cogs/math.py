@@ -14,7 +14,7 @@ class Math:
 
 		self.bot = bot
 	async def getgraph(self,ctx,args):
-		x=np.array(np.linspace(-20,20,1000))
+		x=np.array(np.linspace(-50,50,1000))
 		var = {'x':x,'sin':np.sin,'cos':np.cos,'sqrt':np.sqrt,'log':np.log,'abs':np.abs,'pow':np.power}
 		if "**" in args:
 			return await self.bot.send_message(ctx.message.channel,"Neplatný ** operátor, použij pow()")

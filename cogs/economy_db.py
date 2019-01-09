@@ -21,7 +21,7 @@ class Economy:
 			self.d[server].insert_one({"name":str(user),"amount":500})
 			await self.bot.say(f"`Účet pro {user.display_name} byl založen!`")
 		else:
-			await self.bot.say(f"`{user.display_name} má na účtě {acc['amount']} penízků`")
+			await self.bot.say(f"`{user.display_name} má na účtě {acc['amount']} lováčů`")
 	
 	@commands.command(pass_context = True,no_pm=True,aliases=["denne","deni","dailyscheckel","neetbux","šekel"])
 	@commands.cooldown(rate=1, per=10, type=commands.BucketType.user)

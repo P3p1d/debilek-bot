@@ -76,7 +76,7 @@ async def quit(ctx):
         
 async def newhra(bot):
     #o=["si s kouskem hlíny","Minecraft","§help","§meme",f"si na {len(bot.servers)} serverech","debile help","https://debilekbot.glitch.me/"]
-    o=["§steal","§€","§economy","vydělává těžký šekely","§help","debile help"]
+    o=["§biz","§€","§economy","vydělává těžký šekely","§help","§buy"]
     await bot.change_presence(game=Game(name=random.choice(o)))
     try:
         await asyncio.sleep(1800)

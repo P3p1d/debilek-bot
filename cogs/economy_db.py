@@ -149,8 +149,8 @@ class Economy:
 		server = str(ctx.message.server.id)
 		if bizid==0:
 			return await self.bot.say("Neřekl jsi, co si chceš koupit!")
-		elif bizid>9:
-			return await self.bot.say("Zdal jsi moc vysoké id!")
+		elif bizid<1:
+			return await self.bot.say("ID musí být větší než nula")
 		biz = self.col.biz.bizdb.find_one({"id":bizid})
 		if biz is None:
 			return await self.bot.say("Tento byznys neexistuje!")

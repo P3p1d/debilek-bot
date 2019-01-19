@@ -151,8 +151,7 @@ class Music:
         try:
             player = await state.voice.create_ytdl_player(song, ytdl_options=opts, before_options=beforeArgs, after=lambda: state.toggle_next(ctx))
         except Exception as e:
-            fmt = 'Chybka se vyskytla: ```py\n{}: {}\n```'
-            await self.bot.send_message(ctx.message.channel, fmt.format(type(e).__name__, e))
+            await self.bot.say("Při stahování písničky se vyskytla chyba, zkus jinou")
         else:
             entry = VoiceEntry(ctx.message, player)
             await self.bot.say('Přidáno do fronty ' + str(entry))

@@ -27,7 +27,7 @@ class Economy:
 			t = (datetime.datetime.utcnow()-acc["last_check"]).total_seconds()
 			acc["amount"] += t*acc["pers"]
 			self.d[server].update_one({"name":str(user)},{"$set":{"last_check":datetime.datetime.utcnow(),"amount":acc["amount"]}})
-			return await self.bot.say(f"`{user.display_name} má na účtě {round(acc['amount'],2)} penízků a vydělává {acc['pers']} za vteřinu`")
+			return await self.bot.say(f"`{user.display_name} má na účtě {round(acc['amount'],2)} penízků a vydělává {round(acc['pers'],2)} za vteřinu`")
 		await self.bot.say(f"`{user.display_name} má na účtě {acc['amount']} penízků`")
 	
 	@commands.command(pass_context = True,no_pm=True,aliases=["denne","deni","dailyscheckel","neetbux","šekel"])
@@ -184,7 +184,7 @@ class Economy:
 		e=discord.Embed(colour=discord.Colour.green())
 		for biz,num in counted.items():
 			biz=self.col.biz.bizdb.find_one({"id":biz})
-			e.add_field(name=biz["name"],value=f"{num} krát\nVydělává {num*biz['pers']} za vteřinu",inline = False)
+			e.add_field(name=biz["name"],value=f"{num} krát\nVydělává {round(num*biz['pers'],2)} za vteřinu",inline = False)
 		e.set_author(name=user.display_name,icon_url=user.avatar_url)
 		await self.bot.say(embed=e)
 

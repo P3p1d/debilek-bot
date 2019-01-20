@@ -147,7 +147,7 @@ class Music:
             success = await ctx.invoke(self.summon)
             await self.bot.say("Načítání písničky...")
             if not success:
-                return await self.bot.say("Cestou se vyskytla chyba")
+                return await self.bot.send_message(ctx.message.channel,"Cestou se vyskytla chyba")
         try:
             player = await state.voice.create_ytdl_player(song, ytdl_options=opts, before_options=beforeArgs, after=lambda: state.toggle_next(ctx))
         except Exception as e:

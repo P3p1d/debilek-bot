@@ -11,6 +11,16 @@ class Economy:
 		self.bot = bot
 		self.col=MongoClient(os.environ["MONGOURI"])
 		self.d=self.col.debilek
+	def parser(self,x):
+	i = -3
+	fmtd = ""
+	if len(x) < 4:
+		return x
+	while True:
+		fmtd = x[i:] + " " + fmtd
+		if len(x) <= 2:
+			return fmtd
+		x = x[:i:]
 	@commands.command(pass_context = True,no_pm=True,aliases=["ekonomy","ekonomika","€","balance","bilance"])
 	@commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
 	async def economy(self,ctx,user:discord.Member = None):
@@ -27,6 +37,8 @@ class Economy:
 			t = (datetime.datetime.utcnow()-acc["last_check"]).total_seconds()
 			acc["amount"] += t*acc["pers"]
 			self.d[server].update_one({"name":str(user)},{"$set":{"last_check":datetime.datetime.utcnow(),"amount":acc["amount"]}})
+			if acc['amount'] >= 10000:
+				acc['amount'] = self.parser(str(int(acc[amount])))
 			return await self.bot.say(f"`{user.display_name} má na účtě {round(acc['amount'],2)} penízků a vydělává {round(acc['pers'],2)} za vteřinu`")
 		await self.bot.say(f"`{user.display_name} má na účtě {acc['amount']} penízků`")
 	
@@ -129,7 +141,7 @@ class Economy:
 		point = self.col.biz.bizdb.find({})
 		e=discord.Embed(colour=discord.Colour.green())
 		for doc in point:
-			e.add_field(name=doc["name"],value=f'id: {doc["id"]}\ncena: {doc["price"]}:dollar:\n{doc["des"]}',inline=False)
+			e.add_field(name=doc["name"],value=f'id: {doc["id"]}\ncena: {self.parser(str(doc["price"]))}:dollar:\n{doc["des"]}',inline=False)
 		e.set_author(name="Byznys")
 		e.set_footer(text="Byznys si koupíš pomocí §buy <id>")
 		await self.bot.say(embed=e)

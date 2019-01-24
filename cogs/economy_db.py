@@ -12,15 +12,15 @@ class Economy:
 		self.col=MongoClient(os.environ["MONGOURI"])
 		self.d=self.col.debilek
 	def parser(self,x):
-	i = -3
-	fmtd = ""
-	if len(x) < 4:
-		return x
-	while True:
-		fmtd = x[i:] + " " + fmtd
-		if len(x) <= 2:
-			return fmtd
-		x = x[:i:]
+		i = -3
+		fmtd = ""
+		if len(x) < 4:
+			return x
+		while True:
+			fmtd = x[i:] + " " + fmtd
+			if len(x) <= 2:
+				return fmtd
+			x = x[:i:]
 	@commands.command(pass_context = True,no_pm=True,aliases=["ekonomy","ekonomika","€","balance","bilance"])
 	@commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
 	async def economy(self,ctx,user:discord.Member = None):

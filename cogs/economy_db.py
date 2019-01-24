@@ -38,8 +38,10 @@ class Economy:
 			acc["amount"] += t*acc["pers"]
 			self.d[server].update_one({"name":str(user)},{"$set":{"last_check":datetime.datetime.utcnow(),"amount":acc["amount"]}})
 			if acc['amount'] >= 10000:
-				acc['amount'] = self.parser(str(int(acc['amount'])))
-			return await self.bot.say(f"`{user.display_name} má na účtě {round(acc['amount'],2)} penízků a vydělává {round(acc['pers'],2)} za vteřinu`")
+				val = self.parser(str(int(acc['amount'])))
+			else:
+				val=round(acc['amount'],2)
+			return await self.bot.say(f"`{user.display_name} má na účtě {val} penízků a vydělává {round(acc['pers'],2)} za vteřinu`")
 		await self.bot.say(f"`{user.display_name} má na účtě {acc['amount']} penízků`")
 	
 	@commands.command(pass_context = True,no_pm=True,aliases=["denne","deni","dailyscheckel","neetbux","šekel"])

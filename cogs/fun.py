@@ -14,14 +14,7 @@ from discord.ext.commands import has_permissions
 class Fun:
 	def __init__(self,bot):
 		self.bot = bot
-	@commands.command(pass_context = True)
-	@commands.cooldown(rate=1, per=2, type=commands.BucketType.user)
-	async def say(self,ctx,*args):
-		try:
-			msg = ' '.join(args)
-			await self.bot.say(msg)
-		except:
-			pass
+
 	@commands.command(pass_context = True,no_pm=True,aliases=['clean','delete','smaz','ocista'])
 	@commands.cooldown(rate=1, per=10, type=commands.BucketType.user)
 	@has_permissions(manage_messages=True)
@@ -157,12 +150,6 @@ class Fun:
 		else:
 			msg = random.choice(possbile_ostatni)
 		await self.bot.say(f"`{msg}`")
-	@commands.command(pass_context= True,aliases=["pozpatku"])
-	@commands.cooldown(rate=1, per=3, type=commands.BucketType.user)
-	async def reverse(self,ctx,*text):
-		text = ' '.join(text)
-		text=text[::-1]
-		await self.bot.say(f"`{text}`")
 
 	@commands.command(pass_context= True,aliases=["láska","<3","luv"])
 	@commands.cooldown(rate=1, per=3, type=commands.BucketType.user)

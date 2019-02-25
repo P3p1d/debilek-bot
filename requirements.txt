@@ -2,7 +2,7 @@ aiohttp==1.0.5
 asyncio==3.4.3
 beautifulsoup4==4.6.3
 cachetools==3.0.0
-discord.py[voice]==0.16.12
+git+https://github.com/Rapptz/discord.py@rewrite#egg=discord.py[voice]
 future==0.17.1
 html2text==2018.1.9
 lxml==4.2.5

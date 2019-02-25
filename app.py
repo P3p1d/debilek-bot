@@ -7,30 +7,24 @@ import random
 import asyncio
 import discord
 import aiohttp
-from discord import Game
 from discord.ext import commands
 import requests
 
 def get_prefix(bot, message):
     """A callable Prefix for our bot. This could be edited to allow per server prefixes."""
-    prefixes = ['§','debile ','Debile ']
+    prefixes = ['test§']
     #if not message.server:
     #    # pouze vykricnik mimo server
     #    return '!'
     return commands.when_mentioned_or(*prefixes)(bot, message)
-HOST = '' 
-PORT = os.environ["PORT"] 
+
 TOKEN = os.environ["TOKEN"]
-s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-try:
-    s.bind((HOST,PORT))
-except Exception as e:
-    print(e)
+
 bot = discord.Client()
 bot = commands.Bot(command_prefix=get_prefix)
 bot.remove_command('help')
 #()  []  {} `
-init_extensions = ['cogs.fun','cogs.wiki','cogs.economy_db','cogs.help','cogs.money','cogs.error_handler','cogs.images','cogs.Music','cogs.ascii_art','cogs.nasa','cogs.Reddit','cogs.math']
+init_extensions = ['cogs.fun','cogs.wiki','cogs.economy_db','cogs.help','cogs.money','cogs.error_handler','cogs.images','cogs.Music_test','cogs.ascii_art','cogs.nasa']#,'cogs.Reddit']
 
 if __name__ == '__main__':
     for extension in init_extensions:
@@ -44,10 +38,9 @@ if __name__ == '__main__':
 @bot.command(pass_context=True)
 async def ping(ctx):
     before = time.monotonic()
-    message = await bot.say("Pong!")
+    message = await ctx.channel.send("Pong!")
     ping = (time.monotonic() - before) * 1000
-    msg = f"Ping je `{str(int(ping))}` milisekund."
-    await bot.say(msg)
+    await ctx.channel.send(f"Ping je `{str(int(ping))}` milisekund.")
 
 @bot.command(pass_context=True)
 async def info(ctx):
@@ -55,28 +48,28 @@ async def info(ctx):
     em.title = 'Debílek Info'
     em.set_author(name=ctx.message.author.name, icon_url=ctx.message.author.avatar_url)
     em.description = 'S láskou stvořen Pepidem'
-    em.add_field(name="Servery", value=len(bot.servers))
+    em.add_field(name="Servery", value=len(bot.guilds))
     em.add_field(name="Online Uživatelé", value=str(len({m.id for m in bot.get_all_members() if m.status is not discord.Status.offline})))
-    em.add_field(name='Kanály', value=f"{sum(1 for g in bot.servers for _ in g.channels)}")
+    em.add_field(name='Kanály', value=f"{sum(1 for g in bot.guilds for _ in g.channels)}")
     em.add_field(name="Knihovna", value=f"discord.py")
     em.add_field(name="Pozvěte Debílka na další server! ", value=f"[Zde](https://discordapp.com/oauth2/authorize?client_id={bot.user.id}&scope=bot&permissions=268905542)")
     em.add_field(name="Více informací o Debílkovi ", value=f"[Zde](https://debilekbot.glitch.me/)",inline=True)
     em.add_field(name="Nezapomeňte pro Debílka hlasovat!", value=f"[Zde](https://discordbots.org/bot/485115987000295435)",inline=True)
     em.set_footer(text="DebílekBot | jede na discord.py")
-    await bot.say(embed=em)
+    await ctx.channel.send(embed=em)
 
 @bot.command(pass_context=True,aliases = ['forfeit','vypadni'])
 async def quit(ctx):
     if str(ctx.message.author) != "Pepid#2491":
-        await bot.say("Tohle nemůžeš!")
+        await ctx.channel.send("Tohle nemůžeš!")
         return
     else:
-        await bot.say("Tak čau!")
+        await ctx.channel.send("Tak čau!")
         await bot.logout()
         
 async def newhra(bot):
-    o=["sub to pewdiepie","§biz","§€","vydělává těžký šekely","si s kouskem hlíny","Minecraft","§help","§meme",f"si na {len(bot.servers)} serverech","debile help","https://debilekbot.glitch.me/"]
-    await bot.change_presence(game=Game(name=random.choice(o)))
+    o=["sub to pewdiepie","§biz","§€","vydělává těžký šekely","si s kouskem hlíny","Minecraft","§help","§meme",f"si na {len(bot.guilds)} serverech","debile help","https://debilekbot.glitch.me/"]
+    await bot.change_presence(activity=discord.Game(random.choice(o)))
     try:
         await asyncio.sleep(1800)
     except asyncio.CancelledError:
@@ -88,6 +81,7 @@ async def on_ready():
     print('Online jako:')
     print(bot.user.name)
     print(bot.user.id)
-    print('-'*len(bot.user.id))
+    print('-'*len(str(bot.user.id)))
     await newhra(bot)
+
 bot.run(TOKEN, bot = True)

@@ -15,6 +15,6 @@ class ASCII:
 		text = self.remove_non_ascii(text)
 		url = "http://artii.herokuapp.com/make?text="+str(text)
 		page = requests.get(url).text
-		await self.bot.say(f"```{str(page)}```")
+		await ctx.message.channel.send(f"```{str(page)}```")
 def setup(bot):
 	bot.add_cog(ASCII(bot))

@@ -83,7 +83,7 @@ class YTDLSource(discord.PCMVolumeTransformer):
             # take first item from a playlist
             data = data['entries'][0]
 
-        await ctx.send(f'```ini\n[Přidal {data["title"]} do fronty]\n```', delete_after=15)
+        await ctx.send(f'```ini\n[Added {data["title"]} to the Queue.]\n```', delete_after=15)
 
         if download:
             source = ytdl.prepare_filename(data)
@@ -149,14 +149,15 @@ class MusicPlayer:
                 try:
                     source = await YTDLSource.regather_stream(source, loop=self.bot.loop)
                 except Exception as e:
-                    await self._channel.send(f'Při zpracování písničky došlo k chybě.')
+                    await self._channel.send(f'There was an error processing your song.\n'
+                                             f'```css\n[{e}]\n```')
                     continue
 
             source.volume = self.volume
             self.current = source
 
             self._guild.voice_client.play(source, after=lambda _: self.bot.loop.call_soon_threadsafe(self.next.set))
-            self.np = await self._channel.send(f'**Teď hraju:** `{source.title}` od '
+            self.np = await self._channel.send(f'**Now Playing:** `{source.title}` requested by '
                                                f'`{source.requester}`')
             await self.next.wait()
 
@@ -205,12 +206,12 @@ class Music:
         """A local error handler for all errors arising from commands in this cog."""
         if isinstance(error, commands.NoPrivateMessage):
             try:
-                return await ctx.send('Tento příkaz nelze v přímých zprávách použít')
+                return await ctx.send('This command can not be used in Private Messages.')
             except discord.HTTPException:
                 pass
         elif isinstance(error, InvalidVoiceChannel):
-            await ctx.send('Chyb při připojování do kanálu. '
-                           'Prosím zadej platný kanál nebo se do nějakého připoj')
+            await ctx.send('Error connecting to Voice Channel. '
+                           'Please make sure you are in a valid channel or provide me with one')
 
         print('Ignoring exception in command {}:'.format(ctx.command), file=sys.stderr)
         traceback.print_exception(type(error), error, error.__traceback__, file=sys.stderr)
@@ -225,8 +226,7 @@ class Music:
 
         return player
 
-    @commands.command(name='connect', aliases=['join','pripoj'])
-    @commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
+    @commands.command(name='connect', aliases=['join'])
     async def connect_(self, ctx, *, channel: discord.VoiceChannel=None):
         """Connect to voice.
         Parameters
@@ -240,7 +240,7 @@ class Music:
             try:
                 channel = ctx.author.voice.channel
             except AttributeError:
-                raise InvalidVoiceChannel('Zadej prosím platný kanál nebo se do nějakého připoj')
+                raise InvalidVoiceChannel('No channel to join. Please either specify a valid channel or join one.')
 
         vc = ctx.voice_client
 
@@ -250,16 +250,16 @@ class Music:
             try:
                 await vc.move_to(channel)
             except asyncio.TimeoutError:
-                raise VoiceConnectionError(f'Přesouvání do kanálu: <{channel}> selhalo.')
+                raise VoiceConnectionError(f'Moving to channel: <{channel}> timed out.')
         else:
             try:
                 await channel.connect()
             except asyncio.TimeoutError:
-                raise VoiceConnectionError(f'Připojování do kanálu: <{channel}> selhalo.')
+                raise VoiceConnectionError(f'Connecting to channel: <{channel}> timed out.')
 
-        await ctx.send(f'Připojen do **{channel}**', delete_after=20)
+        await ctx.send(f'Connected to: **{channel}**', delete_after=20)
 
-    @commands.command(name='play', aliases=['sing','hraj'])
+    @commands.command(name='play', aliases=['sing'])
     async def play_(self, ctx, *, search: str):
         """Request a song and add it to the queue.
         This command attempts to join a valid voice channel if the bot is not already in one.
@@ -284,39 +284,39 @@ class Music:
 
         await player.queue.put(source)
 
-    @commands.command(name='pause',aliases=["pauza"])
+    @commands.command(name='pause')
     async def pause_(self, ctx):
         """Pause the currently playing song."""
         vc = ctx.voice_client
 
         if not vc or not vc.is_playing():
-            return await ctx.send('Teď nic nehraju!', delete_after=20)
+            return await ctx.send('I am not currently playing anything!', delete_after=20)
         elif vc.is_paused():
             return
 
         vc.pause()
-        #await ctx.send(f'**`{ctx.author}`**: Paused the song!')
+        await ctx.send(f'**`{ctx.author}`**: Paused the song!')
 
-    @commands.command(name='resume',aliases=["pokracuj"])
+    @commands.command(name='resume')
     async def resume_(self, ctx):
         """Resume the currently paused song."""
         vc = ctx.voice_client
 
         if not vc or not vc.is_connected():
-            return await ctx.send('Teď nic nehraju!', delete_after=20)
+            return await ctx.send('I am not currently playing anything!', delete_after=20)
         elif not vc.is_paused():
             return
 
         vc.resume()
-        #await ctx.send(f'**`{ctx.author}`**: Resumed the song!')
+        await ctx.send(f'**`{ctx.author}`**: Resumed the song!')
 
-    @commands.command(name='skip',aliases=["preskoc"])
+    @commands.command(name='skip')
     async def skip_(self, ctx):
         """Skip the song."""
         vc = ctx.voice_client
 
         if not vc or not vc.is_connected():
-            return await ctx.send('Teď nic nehraju!', delete_after=20)
+            return await ctx.send('I am not currently playing anything!', delete_after=20)
 
         if vc.is_paused():
             pass
@@ -324,39 +324,39 @@ class Music:
             return
 
         vc.stop()
-        await ctx.send(f'**`{ctx.author}`**: Přeskočil písničku')
+        await ctx.send(f'**`{ctx.author}`**: Skipped the song!')
 
-    @commands.command(name='queue', aliases=['q', 'playlist',"fronta"])
+    @commands.command(name='queue', aliases=['q', 'playlist'])
     async def queue_info(self, ctx):
         """Retrieve a basic queue of upcoming songs."""
         vc = ctx.voice_client
 
         if not vc or not vc.is_connected():
-            return await ctx.send('Teď nejsem připojený do kanálu!', delete_after=20)
+            return await ctx.send('I am not currently connected to voice!', delete_after=20)
 
         player = self.get_player(ctx)
         if player.queue.empty():
-            return await ctx.send('Ve frontě nejsou žádné další písničky')
+            return await ctx.send('There are currently no more queued songs.')
 
         # Grab up to 5 entries from the queue...
         upcoming = list(itertools.islice(player.queue._queue, 0, 5))
 
         fmt = '\n'.join(f'**`{_["title"]}`**' for _ in upcoming)
-        embed = discord.Embed(title=f'Následuje {len(upcoming)}', description=fmt)
+        embed = discord.Embed(title=f'Upcoming - Next {len(upcoming)}', description=fmt)
 
         await ctx.send(embed=embed)
 
-    @commands.command(name='now_playing', aliases=['np', 'current', 'currentsong', 'playing',"hraju"])
+    @commands.command(name='now_playing', aliases=['np', 'current', 'currentsong', 'playing'])
     async def now_playing_(self, ctx):
         """Display information about the currently playing song."""
         vc = ctx.voice_client
 
         if not vc or not vc.is_connected():
-            return await ctx.send('Teď nejsem připojený do kanálu!', delete_after=20)
+            return await ctx.send('I am not currently connected to voice!', delete_after=20)
 
         player = self.get_player(ctx)
         if not player.current:
-            return await ctx.send('Teď nic nehraju!')
+            return await ctx.send('I am not currently playing anything!')
 
         try:
             # Remove our previous now_playing message.
@@ -364,10 +364,10 @@ class Music:
         except discord.HTTPException:
             pass
 
-        player.np = await ctx.send(f'**Teď hraju:** `{vc.source.title}` '
-                                   f'od `{vc.source.requester}`')
+        player.np = await ctx.send(f'**Now Playing:** `{vc.source.title}` '
+                                   f'requested by `{vc.source.requester}`')
 
-    @commands.command(name='volume', aliases=['vol',"hlasitost"])
+    @commands.command(name='volume', aliases=['vol'])
     async def change_volume(self, ctx, *, vol: float):
         """Change the player volume.
         Parameters
@@ -378,10 +378,10 @@ class Music:
         vc = ctx.voice_client
 
         if not vc or not vc.is_connected():
-            return await ctx.send('Teď nejsem připojený do kanálu!', delete_after=20)
+            return await ctx.send('I am not currently connected to voice!', delete_after=20)
 
         if not 0 < vol < 101:
-            return await ctx.send('Prosím vlož číslo mezi 1 a 100.')
+            return await ctx.send('Please enter a value between 1 and 100.')
 
         player = self.get_player(ctx)
 
@@ -389,7 +389,7 @@ class Music:
             vc.source.volume = vol / 100
 
         player.volume = vol / 100
-        await ctx.send(f'**`{ctx.author}`**: nastvail hlasitost na **{vol}%**')
+        await ctx.send(f'**`{ctx.author}`**: Set the volume to **{vol}%**')
 
     @commands.command(name='stop')
     async def stop_(self, ctx):
@@ -400,7 +400,7 @@ class Music:
         vc = ctx.voice_client
 
         if not vc or not vc.is_connected():
-            return await ctx.send('Teď nic nehraju!', delete_after=20)
+            return await ctx.send('I am not currently playing anything!', delete_after=20)
 
         await self.cleanup(ctx.guild)
 

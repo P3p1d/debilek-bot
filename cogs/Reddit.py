@@ -33,19 +33,19 @@ class Reddit:
 	@commands.command(pass_context = True,no_pm=True,aliases=["mem"])
 	@commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
 	async def meme(self,ctx):
-		await self.bot.send_typing(ctx.message.channel)
+		await ctx.channel.trigger_typing()
 		post_to_pick = random.randint(1, 50)
 		s=self.getsubmission("dankmemes",post_to_pick)
 		e=self.embedbuild(s)
-		await self.bot.say(embed=e)
+		await ctx.channel.send(embed=e)
 
 	@commands.command(pass_context = True,no_pm=True,aliases=["agraelus"])
 	@commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
 	async def agrmeme(self,ctx):
-		await self.bot.send_typing(ctx.message.channel)
+		await ctx.channel.trigger_typing()
 		post_to_pick = random.randint(1, 50)
 		s=self.getsubmission("Agraelus",post_to_pick)
 		e=self.embedbuild(s)
-		await self.bot.say(embed=e)
+		await ctx.channel.send(embed=e)
 def setup(bot):
 	bot.add_cog(Reddit(bot,os.environ["clientid"],os.environ["clientsecret"],os.environ["useragent"]))

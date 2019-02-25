@@ -31,8 +31,8 @@ class Money:
 					e.add_field(name='Změna za 1h',value = str(crypto["quotes"]["USD"]["percent_change_1h"])+'%', inline = True)
 					e.add_field(name='Změna za 24h',value = str(crypto["quotes"]["USD"]["percent_change_24h"])+'%', inline = True)
 					e.set_footer(text="Data poskytuje coinmarketcap.com")
-					return await self.bot.say(embed=e)
+					return await ctx.channel.say(embed=e)
 		except json.JSONDecodeError:
-			return await self.bot.say("Chybička se vloudila")
+			return await ctx.channel.say("Chybička se vloudila")
 def setup(bot):
 	bot.add_cog(Money(bot))

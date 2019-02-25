@@ -14,7 +14,7 @@ class Wiki:
 	async def wiki(self,ctx,*args):
 		url="https://cs.wikipedia.org/w/api.php?"
 		if args == ():
-			await self.bot.say("Chybí mi tam stránka!")
+			await ctx.channel.send("Chybí mi tam stránka!")
 			return
 		params = {
 		'format':'json',
@@ -33,9 +33,9 @@ class Wiki:
 			data=data['query']['pages'].popitem()
 			e = discord.Embed(colour = discord.Colour.lighter_grey())
 			e.add_field(name=data[1]['title'],value=data[1]['extract'])
-			await self.bot.say(embed = e),
+			await ctx.channel.send(embed = e),
 		except KeyError:
-			await self.bot.say(f"Pro *{o}* jsem nemohl nic najít :disappointed_relieved:")
+			await ctx.channel.send(f"Pro *{o}* jsem nemohl nic najít :disappointed_relieved:")
 			return
 def setup(bot):
 	bot.add_cog(Wiki(bot))

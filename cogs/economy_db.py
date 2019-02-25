@@ -9,7 +9,7 @@ from discord.ext import commands
 class Economy:
 	def __init__(self,bot):
 		self.bot = bot
-		self.col=MongoClient(os.environ["MONGOURI"])
+		self.col=MongoClient("mongodb://pepid:debilekbot@cluster0-shard-00-00-xbaeu.mongodb.net:27017,cluster0-shard-00-01-xbaeu.mongodb.net:27017,cluster0-shard-00-02-xbaeu.mongodb.net:27017/test?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin&retryWrites=true")#os.environ["MONGOURI"])
 		self.d=self.col.debilek
 	def parser(self,x):
 		i = -3
@@ -24,78 +24,78 @@ class Economy:
 	@commands.command(pass_context = True,no_pm=True,aliases=["ekonomy","ekonomika","€","balance","bilance"])
 	@commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
 	async def economy(self,ctx,user:discord.Member = None):
-		await self.bot.send_typing(ctx.message.channel)
-		server = str(ctx.message.server.id)
+		await ctx.channel.trigger_typing()
+		guild = str(ctx.message.guild.id)
 		if user is None:
 			user = ctx.message.author
-		acc = self.d[server].find_one({"name":str(user)})
+		acc = self.d[guild].find_one({"name":str(user)})
 		if acc is None:
-			self.d[server].insert_one({"name":str(user),"amount":500})
+			self.d[guild].insert_one({"name":str(user),"amount":500})
 			return await self.bot.say(f"`Účet pro {user.display_name} byl založen!`")
 		
 		if "pers" in acc:
 			t = (datetime.datetime.utcnow()-acc["last_check"]).total_seconds()
 			acc["amount"] += t*acc["pers"]
-			self.d[server].update_one({"name":str(user)},{"$set":{"last_check":datetime.datetime.utcnow(),"amount":acc["amount"]}})
+			self.d[guild].update_one({"name":str(user)},{"$set":{"last_check":datetime.datetime.utcnow(),"amount":acc["amount"]}})
 			if acc['amount'] >= 10000:
 				val = self.parser(str(int(acc['amount'])))
 			else:
 				val=round(acc['amount'],2)
-			return await self.bot.say(f"`{user.display_name} má na účtě {val} penízků a vydělává {round(acc['pers'],2)} za vteřinu`")
-		await self.bot.say(f"`{user.display_name} má na účtě {acc['amount']} penízků`")
+			return await ctx.channel.send(f"`{user.display_name} má na účtě {val} penízků a vydělává {round(acc['pers'],2)} za vteřinu`")
+		await ctx.channel.send(f"`{user.display_name} má na účtě {acc['amount']} penízků`")
 	
 	@commands.command(pass_context = True,no_pm=True,aliases=["denne","deni","dailyscheckel","neetbux","šekel"])
 	@commands.cooldown(rate=1, per=10, type=commands.BucketType.user)
 	async def daily(self,ctx):
-		await self.bot.send_typing(ctx.message.channel)
+		await ctx.channel.trigger_typing()
 		user = ctx.message.author
-		server = str(ctx.message.server.id)
-		acc = self.d[server].find_one({"name":str(user)})
+		guild = str(ctx.message.guild.id)
+		acc = self.d[guild].find_one({"name":str(user)})
 		if acc is None:
-			self.d[server].insert_one({"name":str(user),"amount":750,"last_daily":datetime.datetime.utcnow()})
-			return await self.bot.say("250:dollar: přidáno!")
+			self.d[guild].insert_one({"name":str(user),"amount":750,"last_daily":datetime.datetime.utcnow()})
+			await ctx.channel.send("250:dollar: přidáno!")
 		elif "last_daily" not in acc:
-			self.d[server].update_one({"name":str(user)},{"$set":{"last_daily":datetime.datetime.utcnow(),"amount":acc["amount"]+250}})
-			return await self.bot.say("250:dollar: přidáno!")
+			self.d[guild].update_one({"name":str(user)},{"$set":{"last_daily":datetime.datetime.utcnow(),"amount":acc["amount"]+250}})
+			await ctx.channel.send("250:dollar: přidáno!")
 		t = (datetime.datetime.utcnow()-acc["last_daily"]).days
 		if t < 0:
-			return await self.bot.say("`Dnešní příděl šekelů už jsi dostal, přijď zas příště!`")
-		self.d[server].update_one({"name":str(user)},{"$set":{"last_daily":datetime.datetime.utcnow(),"amount":acc["amount"]+250}})
-		await self.bot.say("250:dollar: přidáno!")
+			ctx.channel.send("`Dnešní příděl šekelů už jsi dostal, přijď zas příště!`")
+		self.d[guild].update_one({"name":str(user)},{"$set":{"last_daily":datetime.datetime.utcnow(),"amount":acc["amount"]+250}})
+		await ctx.channel.send("250:dollar: přidáno!")
 
 	@commands.command(pass_context = True,no_pm=True,aliases=["susenka","🍪","biscuit"])
 	@commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
 	async def cookie(self,ctx,user:discord.Member = None):
-		await self.bot.send_typing(ctx.message.channel)
+		await ctx.message.trigger_typing()
 		if user is None:
-			return await self.bot.say("Nikoho jsi neoznačil!")
-		server = str(ctx.message.server.id)
-		acc = self.d[server].find_one({"name":str(user)})
-		aut=self.d[server].find_one({"name":str(ctx.message.author)})
+			return await ctx.channel.send("Nikoho jsi neoznačil!")
+		guild = str(ctx.message.guild.id)
+		acc = self.d[guild].find_one({"name":str(user)})
+		aut=self.d[guild].find_one({"name":str(ctx.message.author)})
 		if acc is None:
-			return await self.bot.say(f"`{user.display_name} si ještě nezaložil účet pomocí §economy !`")
+			return await ctx.channel.send(f"`{user.display_name} si ještě nezaložil účet pomocí §economy !`")
 		elif aut is None:
-			return await self.bot.say("`Nemůžeš rozdávat sušenky aniž by sis založil účet pomocí §economy !`")
+			return await ctx.channel.send("`Nemůžeš rozdávat sušenky aniž by sis založil účet pomocí §economy !`")
 		if aut["amount"]<10:
-			return await self.bot.say("`Jedna sušenka stojí 10 šekelů, a to ty jaksi nemáš`")
-		self.d[server].update_one({"name":str(user)},{"$set":{"amount":acc["amount"]+10}})
-		self.d[server].update_one({"name":str(ctx.message.author)},{"$set":{"amount":aut["amount"]-10}})
-		await self.bot.say(f"`{ctx.message.author.display_name} poslal {user.display_name} sušenku!`")
+			return await ctx.channel.send("`Jedna sušenka stojí 10 šekelů, a to ty jaksi nemáš`")
+		self.d[guild].update_one({"name":str(user)},{"$set":{"amount":acc["amount"]+10}})
+		self.d[guild].update_one({"name":str(ctx.message.author)},{"$set":{"amount":aut["amount"]-10}})
+		await ctx.channel.send(f"`{ctx.message.author.display_name} poslal {user.display_name} sušenku!`")
 
 	@commands.command(pass_context = True,no_pm=True,aliases=["thief","kradez"])
 	@commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
 	async def steal(self,ctx,user:discord.Member=None):
-		await self.bot.send_typing(ctx.message.channel)
+		await ctx.channel.trigger_typing()
 		if user is None:
-			return await self.bot.say("A koho chceš teda okrást?")
+			return await ctx.channel.send("A koho chceš teda okrást?")
 		if user == str(ctx.message.author):
-			return await self.bot.say("Proč by jsi okrádal sám sebe?")
+			return await ctx.channel.send("Proč by jsi okrádal sám sebe?")
 		chance = random.randint(0,10)
-		server = str(ctx.message.server.id)
-		acc = self.d[server].find_one({"name":str(user)})
-		aut=self.d[server].find_one({"name":str(ctx.message.author)})
+		guild = str(ctx.message.guild.id)
+		acc = self.d[guild].find_one({"name":str(user)})
+		aut=self.d[guild].find_one({"name":str(ctx.message.author)})
 		if acc is None or aut is None:
-			return await self.bot.say("Jeden z vás si ještě nezaložil účet")
+			return await ctx.channel.send("Jeden z vás si ještě nezaložil účet")
 		
 		if chance>=5:
 			stolen = random.randrange(0,600,10)
@@ -103,50 +103,50 @@ class Economy:
 				stolen = acc["amount"]
 			if acc["amount"]<=0:
 				return await self.bot.say("Přece bys neokradl někoho kdo nemá ani na sušenku, že ne?") 
-			self.d[server].update_one({"name":str(user)},{"$set":{"amount":acc["amount"]-stolen}})
-			self.d[server].update_one({"name":str(ctx.message.author)},{"$set":{"amount":aut["amount"]+stolen}})
-			await self.bot.say(f"{ctx.message.author.display_name} ukradl {user.display_name} {stolen}:dollar:!")
+			self.d[guild].update_one({"name":str(user)},{"$set":{"amount":acc["amount"]-stolen}})
+			self.d[guild].update_one({"name":str(ctx.message.author)},{"$set":{"amount":aut["amount"]+stolen}})
+			await ctx.channel.send(f"{ctx.message.author.display_name} ukradl {user.display_name} {stolen}:dollar:!")
 		else:
 			stolen = random.randrange(50,550,10)
-			self.d[server].update_one({"name":str(ctx.message.author)},{"$set":{"amount":aut["amount"]-stolen}})
-			await self.bot.say(f":oncoming_police_car:{ctx.message.author.display_name} načapala policie při činu! Pokuta činí {stolen} šekelů")
+			self.d[guild].update_one({"name":str(ctx.message.author)},{"$set":{"amount":aut["amount"]-stolen}})
+			await ctx.channel.send(f":oncoming_police_car:{ctx.message.author.display_name} načapala policie při činu! Pokuta činí {stolen} šekelů")
 
 	@commands.command(pass_context = True,no_pm=True,aliases=["roulete","ruleta"])
 	@commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
 	async def automat(self,ctx,mlt,amount):
-		await self.bot.send_typing(ctx.message.channel)
+		await ctx.channel.trigger_typing()
 		try:
 			mlt = float(mlt)
 			amount = int(amount)
 		except:
-			return await self.bot.say("Jedna z hodnot je špatně!")		
+			return await ctx.channel.send("Jedna z hodnot je špatně!")		
 		if mlt<=1:
-			return self.bot.say("Násobitel musí být větší než jedna!")
+			return ctx.channel.send("Násobitel musí být větší než jedna!")
 		chance = 1/mlt
-		server = str(ctx.message.server.id)
-		a = self.d[server].find_one({"name":str(ctx.message.author)})
+		guild = str(ctx.message.guild.id)
+		a = self.d[guild].find_one({"name":str(ctx.message.author)})
 		if a is None:
-			return await self.bot.say("Ještě sis nezaložil účet!")
+			return await ctx.channel.send("Ještě sis nezaložil účet!")
 		if a["amount"]<amount:
-			return await self.bot.say("Chtěl si vsadit víc peněz než máš na účtě!")
+			return await ctx.channel.send("Chtěl si vsadit víc peněz než máš na účtě!")
 		if random.random() > chance:
-			self.d[server].update_one({"name":str(ctx.message.author)},{"$set":{"amount":a["amount"]-amount}})
-			return await self.bot.say(f"`{ctx.message.author.display_name} prohrál {float(amount)} šekelů!`")
+			self.d[guild].update_one({"name":str(ctx.message.author)},{"$set":{"amount":a["amount"]-amount}})
+			return await ctx.channel.send(f"`{ctx.message.author.display_name} prohrál {float(amount)} šekelů!`")
 		won = mlt*amount
-		self.d[server].update_one({"name":str(ctx.message.author)},{"$set":{"amount":a["amount"]+won}})
-		await self.bot.say(f"`{ctx.message.author.display_name} vyhrál v automatu {won} šekelů!`")
+		self.d[guild].update_one({"name":str(ctx.message.author)},{"$set":{"amount":a["amount"]+won}})
+		await ctx.channel.send(f"`{ctx.message.author.display_name} vyhrál v automatu {won} šekelů!`")
 	
 	@commands.command(pass_context = True,no_pm=True,aliases=["biz"])
 	@commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
 	async def business(self,ctx):
-		await self.bot.send_typing(ctx.message.channel)
+		await ctx.channel.trigger_typing()
 		point = self.col.biz.bizdb.find({})
 		e=discord.Embed(colour=discord.Colour.green())
 		for doc in point:
 			e.add_field(name=doc["name"],value=f'id: {doc["id"]}\ncena: {self.parser(str(doc["price"]))}:dollar:\n{doc["des"]}',inline=False)
 		e.set_author(name="Byznys")
 		e.set_footer(text="Byznys si koupíš pomocí §buy <id>")
-		await self.bot.say(embed=e)
+		await ctx.channel.send(embed=e)
 	
 	async def getpers(self,a):
 		val = 0
@@ -159,48 +159,48 @@ class Economy:
 	@commands.command(pass_context = True,no_pm=True,aliases=["kup"])
 	@commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
 	async def buy(self,ctx,bizid:int=0):
-		await self.bot.send_typing(ctx.message.channel)
-		server = str(ctx.message.server.id)
+		await ctx.channel.trigger_typing()
+		guild = str(ctx.message.guild.id)
 		if bizid==0:
-			return await self.bot.say("Neřekl jsi, co si chceš koupit!")
+			return await ctx.channel.send("Neřekl jsi, co si chceš koupit!")
 		elif bizid<1:
-			return await self.bot.say("ID musí být větší než nula")
+			return await ctx.channel.send("ID musí být větší než nula")
 		biz = self.col.biz.bizdb.find_one({"id":bizid})
 		if biz is None:
-			return await self.bot.say("Tento byznys neexistuje!")
-		a = self.d[server].find_one({"name":str(ctx.message.author)})
+			return await ctx.channel.send("Tento byznys neexistuje!")
+		a = self.d[guild].find_one({"name":str(ctx.message.author)})
 		if a is None:
-			return await self.bot.say("Ještě sis nezaložil účet!")
+			return await ctx.channel.send("Ještě sis nezaložil účet!")
 		elif biz["price"]>a["amount"]:
-			return await self.bot.say("Na tento byznys nemáš peníze!")
-		self.d[server].update_one({"name":str(ctx.message.author)},{"$push":{"bizs":bizid}})
-		a = self.d[server].find_one({"name":str(ctx.message.author)})
+			return await ctx.channel.send("Na tento byznys nemáš peníze!")
+		self.d[guild].update_one({"name":str(ctx.message.author)},{"$push":{"bizs":bizid}})
+		a = self.d[guild].find_one({"name":str(ctx.message.author)})
 		upers = await self.getpers(a)																							
 		if "last_check" not in a:
-			self.d[server].update_one({"name":str(ctx.message.author)},{"$set":{"amount":a["amount"]-float(biz["price"]),"pers":upers,"last_check":datetime.datetime.utcnow()}})
+			self.d[guild].update_one({"name":str(ctx.message.author)},{"$set":{"amount":a["amount"]-float(biz["price"]),"pers":upers,"last_check":datetime.datetime.utcnow()}})
 		else:
-			self.d[server].update_one({"name":str(ctx.message.author)},{"$set":{"amount":a["amount"]-float(biz["price"]),"pers":upers}})
-		await self.bot.say(f"Úspěšně sis koupil předmět {biz['name']}!")
+			self.d[guild].update_one({"name":str(ctx.message.author)},{"$set":{"amount":a["amount"]-float(biz["price"]),"pers":upers}})
+		await ctx.channel.send(f"Úspěšně sis koupil předmět {biz['name']}!")
 
 	@commands.command(pass_context = True,no_pm=True,aliases=["inventář"])
 	@commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
 	async def inventory(self,ctx,user:discord.Member=None):
-		await self.bot.send_typing(ctx.message.channel)
-		server = str(ctx.message.server.id)
+		await ctx.channel.trigger_typing()
+		guild = str(ctx.message.guild.id)
 		if user is None:
 			user=ctx.message.author
-		a = self.d[server].find_one({"name":str(user)})
+		a = self.d[guild].find_one({"name":str(user)})
 		if a is None:
-			return await self.bot.say(f"{user.display_name} si ještě nezaložil účet")
+			return await ctx.channel.send(f"{user.display_name} si ještě nezaložil účet")
 		if "bizs" not in a:
-			return await self.bot.say(f"{user.display_name} si ještě nic nekoupil!")
+			return await ctx.channel.send(f"{user.display_name} si ještě nic nekoupil!")
 		counted=Counter(a["bizs"])
 		e=discord.Embed(colour=discord.Colour.green())
 		for biz,num in counted.items():
 			biz=self.col.biz.bizdb.find_one({"id":biz})
 			e.add_field(name=biz["name"],value=f"{num} krát\nVydělává {round(num*biz['pers'],2)} za vteřinu",inline = False)
 		e.set_author(name=user.display_name,icon_url=user.avatar_url)
-		await self.bot.say(embed=e)
+		await ctx.channel.send(embed=e)
 
 def setup(bot):
 	bot.add_cog(Economy(bot))

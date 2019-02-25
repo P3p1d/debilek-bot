@@ -22,28 +22,28 @@ http://discordpy.readthedocs.io/en/rewrite/ext/commands/api.html#errors
 class CommandErrorHandler:
 	def __init__(self, bot):
 		self.bot = bot
-	async def on_command_error(self, error, ctx):
+	async def on_command_error(self,ctx,error):
 		channel = ctx.message.channel
 		if isinstance(error,commands.CommandOnCooldown):
-			return await self.bot.send_message(channel, f"{ctx.message.author.mention} v klidu bejku! Ještě musíš {error.retry_after:.1f} sekund vychladnout.")
+			return await ctx.channel.send(f"{ctx.message.author.mention} v klidu bejku! Ještě musíš {error.retry_after:.1f} sekund vychladnout.")
 		elif isinstance(error,commands.CommandNotFound):
-			return await self.bot.send_message(channel,"Tenhle příkaz neznám :disappointed_relieved: \nZkus !help")
+			return await ctx.channel.send("Tenhle příkaz neznám :disappointed_relieved: \nZkus !help")
 		elif isinstance(error,commands.BadArgument):
-			return await self.bot.send_message(channel,"Asi překlep?")
+			return await ctx.channel.send("Asi překlep?")
 		elif isinstance(error,commands.MissingRequiredArgument):
-			return await self.bot.send_message(channel,"Něco mi tam chybí")
+			return await ctx.channel.send("Něco mi tam chybí")
 		elif isinstance(error,commands.TooManyArguments):
-			return await self.bot.send_message(channel,"To je na mě trochu moc věcí, zkus to zkrátit")
+			return await ctx.channel.send("To je na mě trochu moc věcí, zkus to zkrátit")
 		elif isinstance(error,ValueError):
-			return await self.bot.send_message(channel,"Se zadanou hodnotou je něco špatně :/")
+			return await ctx.channel.send("Se zadanou hodnotou je něco špatně :/")
 		elif isinstance(error,commands.NoPrivateMessage):
-			return await self.bot.send_message(channel,"Hele, tady v intimču DMs tyhle příkazy používat nemůžeš...")
+			return await ctx.channel.send("Hele, tady v intimču DMs tyhle příkazy používat nemůžeš...")
 		elif isinstance(error,errors.HTTPException):
-			return await self.bot.send_message(channel,"Odehrála se chyba v matrixu. Nebo prostě někdo cestou zakopl o kabel.")
+			return await ctx.channel.send("Odehrála se chyba v matrixu. Nebo prostě někdo cestou zakopl o kabel.")
 		elif isinstance(error,errors.Forbidden):
-			return await self.bot.send_message(channel,"Někdo mi odepřel přístup na internet... hmmm")
+			return await ctx.channel.send("Někdo mi odepřel přístup na internet... hmmm")
 		"""elif isinstance(error,commands.CommandInvokeError):
-			return await self.bot.send_message(channel,"Něco je špatně...")"""
+			return await ctx.channel.send(channel,"Něco je špatně...")"""
 		print('Ignoring exception in command {}:'.format(ctx.command), file=sys.stderr)
 		traceback.print_exception(type(error), error, error.__traceback__, file=sys.stderr)
 def setup(bot):

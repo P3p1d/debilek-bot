@@ -37,6 +37,6 @@ class Help():
 		em.add_field(name = "!cookie", value = "Omluv se svému příteli za krádež tím, že mu pošleš sušenku. Jedna sušenka stojí 10 šekelů",inline = False)
 		await self.bot.say("Koukni se do DMs :wink:") 
 		await self.bot.send_message(author,embed=em) """
-		await self.bot.say("https://debilekbot.glitch.me/") 
+		await ctx.channel.send("https://debilekbot.glitch.me/") 
 def setup(bot):
 	bot.add_cog(Help(bot))

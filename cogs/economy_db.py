@@ -6,7 +6,7 @@ from pymongo import *
 from collections import Counter
 from discord.ext import commands
 
-class Economy:
+class Economy(commands.Cog):
 	def __init__(self,bot):
 		self.bot = bot
 		self.col=MongoClient("mongodb://pepid:debilekbot@cluster0-shard-00-00-xbaeu.mongodb.net:27017,cluster0-shard-00-01-xbaeu.mongodb.net:27017,cluster0-shard-00-02-xbaeu.mongodb.net:27017/test?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin&retryWrites=true")#os.environ["MONGOURI"])

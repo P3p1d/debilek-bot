@@ -5,7 +5,7 @@ import urllib.request
 from discord.ext import commands
 url = "https://api.coinmarketcap.com/v2/listings/"
 url_logo = "https://raw.githubusercontent.com/dziungles/cryptocurrency-logos/master/coins/32x32/"
-class Money:
+class Money(commands.Cog):
 	def __init__(self,bot):
 		self.bot = bot
 	@commands.command(pass_context = True, aliases = ["monies","penizky","crypto","krypto","mny"])

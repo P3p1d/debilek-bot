@@ -9,7 +9,7 @@ import discord
 import aiohttp
 from discord.ext import commands
 import requests
-
+print(discord.__version__)
 def get_prefix(bot, message):
     """A callable Prefix for our bot. This could be edited to allow per server prefixes."""
     prefixes = ['test§']

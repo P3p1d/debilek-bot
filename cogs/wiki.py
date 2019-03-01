@@ -3,7 +3,7 @@ import requests
 from discord.ext import commands
 import json
 
-class Wiki:
+class Wiki(commands.Cog):
 	def __init__(self,bot):
 		self.bot = bot
 	def cleanhtml(self,raw_html):

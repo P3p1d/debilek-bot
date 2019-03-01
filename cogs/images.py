@@ -5,7 +5,7 @@ import requests
 import shutil
 from discord.ext import commands
 from PIL import Image, ImageEnhance, ImageDraw, ImageFont
-class Images:
+class Images(commands.Cog):
 	def __init__(self,bot):
 		self.bot=bot
 	async def getimage(self,ctx):

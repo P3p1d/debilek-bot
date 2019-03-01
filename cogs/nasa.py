@@ -5,7 +5,7 @@ import requests
 from discord.ext import commands
 from datetime import datetime as dt
 from datetime import timedelta
-class NASA:
+class NASA(commands.Cog):
 	def __init__(self,bot):
 		self.bot=bot
 

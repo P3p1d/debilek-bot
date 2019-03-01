@@ -3,7 +3,7 @@ import discord
 import requests
 from unidecode import unidecode
 from discord.ext import commands
-class ASCII:
+class ASCII(commands.Cog):
 	def __init__(self,bot):
 		self.bot = bot
 	def remove_non_ascii(self,text):

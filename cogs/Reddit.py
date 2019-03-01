@@ -5,7 +5,7 @@ import random
 from cachetools import cached, TTLCache
 import os
 
-class Reddit:
+class Reddit(commands.Cog):
 	cache=TTLCache(maxsize=50, ttl=1800)
 	def __init__(self,bot,client_id,client_secret,user_agent):
 		self.bot = bot

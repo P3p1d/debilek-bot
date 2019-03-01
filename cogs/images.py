@@ -12,11 +12,11 @@ class Images:
 		async for x in ctx.channel.history(limit = 15):
 			if x.attachments != []:
 				suffixes = ('.jpeg','.jpg','.png')
-				if x.attachments[0]['url'].endswith(suffixes):
-					filename = x.attachments[0]['url'].split('/')
+				if x.attachments[0].url.endswith(suffixes):
+					filename = x.attachments[0].url.split('/')
 					filename = filename[-1]
-					response = requests.get(x.attachments[0]['url'], stream=True)
-					filename = ctx.message.server.id + filename
+					response = requests.get(x.attachments[0].url, stream=True)
+					filename = str(ctx.message.guild.id) + filename
 					with open(filename, 'wb') as out_file:
 						shutil.copyfileobj(response.raw, out_file)
 					size=500,500
@@ -46,7 +46,8 @@ class Images:
 			factor = 7.0
 		try:
 			im,filename=await self.getimage(ctx)
-		except TypeError:
+		except Exception as e:
+			raise e
 			return await ctx.channel.send("Žádný obrázek ve správné velikosti se mi nepodařilo najít :cry:")
 		im = im.convert(mode="RGB")
 		im = ImageEnhance.Color(im).enhance(factor/2)
@@ -223,7 +224,7 @@ class Images:
 		if len(text)>25:
 			return await ctx.channel.send("Text je příliš dlouhý, maximum je 25 písmen.")
 		im=Image.open("./images/extras/meme_template5.jpg")
-		filename=f"bart{ctx.message.server.id}.jpg"
+		filename=f"bart{ctx.message.guild.id}.jpg"
 		width,height=im.size
 		fnt = ImageFont.truetype("./images/extras/arial.ttf", int(height/28))
 		draw = ImageDraw.Draw(im)

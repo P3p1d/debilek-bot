@@ -84,7 +84,7 @@ class Fun:
 			embed.add_field(name="Majitel", value=ctx.message.guild.owner, inline=True)
 			embed.add_field(name="Region", value=ctx.message.guild.region, inline=True)
 			embed.add_field(name="Vytvořeno", value= ctx.message.guild.created_at, inline=True)
-		await self.bot.say(content=f"Něco málo o  **{ctx.message.guild.name}**", embed=embed)
+		await ctx.channel.send(content=f"Něco málo o  **{ctx.message.guild.name}**", embed=embed)
 	
 	async def randomimageapi(self, ctx, url, endpoint):
 		try:

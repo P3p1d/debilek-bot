@@ -12,7 +12,7 @@ import requests
 print(discord.__version__)
 def get_prefix(bot, message):
     """A callable Prefix for our bot. This could be edited to allow per server prefixes."""
-    prefixes = ['§','d!','debile','Debile']
+    prefixes = ['§','d!','debile ','Debile ']
     #if not message.server:
     #    # pouze vykricnik mimo server
     #    return '!'

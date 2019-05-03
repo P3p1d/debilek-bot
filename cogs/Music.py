@@ -83,7 +83,7 @@ class YTDLSource(discord.PCMVolumeTransformer):
             # take first item from a playlist
             data = data['entries'][0]
 
-        await ctx.send(f'```ini\n[Přidal {data["title"]} do fronty]\n```', delete_after=15)
+        await ctx.send(f'```ini\n[Přidal jsem {data["title"]} do fronty]\n```', delete_after=15)
 
         if download:
             source = ytdl.prepare_filename(data)
@@ -339,7 +339,7 @@ class Music(commands.Cog):
             return await ctx.send('Ve frontě nejsou žádné další písničky')
 
         # Grab up to 5 entries from the queue...
-        upcoming = list(itertools.islice(player.queue._queue, 0, 5))
+        upcoming = list(itertools.islice(player.queue._queue, 0, 15))
 
         fmt = '\n'.join(f'**`{_["title"]}`**' for _ in upcoming)
         embed = discord.Embed(title=f'Následuje {len(upcoming)}', description=fmt)
@@ -389,7 +389,7 @@ class Music(commands.Cog):
             vc.source.volume = vol / 100
 
         player.volume = vol / 100
-        await ctx.send(f'**`{ctx.author}`**: nastvail hlasitost na **{vol}%**')
+        await ctx.send(f'**`{ctx.author}`**: nastavil hlasitost na **{vol}%**')
 
     @commands.command(name='stop')
     async def stop_(self, ctx):

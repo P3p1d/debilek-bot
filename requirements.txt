@@ -1,7 +1,7 @@
 aiohttp>=1.0.0,<1.1.0
 websockets>=5.0
 asyncio==3.4.3
-git+https://github.com/Rapptz/discord.py@rewrite#egg=discord.py[voice]
+git+https://github.com/Rapptz/discord.py@rewrite#egg=discord.py[voice] >= 1.2.5
 beautifulsoup4==4.6.3
 cachetools==3.0.0
 future==0.17.1

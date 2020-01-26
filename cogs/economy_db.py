@@ -66,7 +66,7 @@ class Economy(commands.Cog):
 	@commands.command(pass_context = True,no_pm=True,aliases=["susenka","🍪","biscuit"])
 	@commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
 	async def cookie(self,ctx,user:discord.Member = None):
-		await ctx.message.trigger_typing()
+		await ctx.channel.trigger_typing()
 		if user is None:
 			return await ctx.channel.send("Nikoho jsi neoznačil!")
 		guild = str(ctx.message.guild.id)

@@ -98,7 +98,7 @@ class Economy(commands.Cog):
 			return await ctx.channel.send("Jeden z vás si ještě nezaložil účet")
 		
 		if chance>=5:
-			stolen = random.randrange(0,(0.75*acc["amount"]),10)
+			stolen = random.randrange(0,int(0.75*acc["amount"]),10)
 			if acc["amount"]-stolen<0:
 				stolen = acc["amount"]
 			if acc["amount"]<=0:
@@ -107,7 +107,7 @@ class Economy(commands.Cog):
 			self.d[guild].update_one({"name":str(ctx.message.author)},{"$set":{"amount":aut["amount"]+stolen}})
 			await ctx.channel.send(f"{ctx.message.author.display_name} ukradl {user.display_name} {stolen}:dollar:!")
 		else:
-			stolen = random.randrange((0.1*aut["amount"]),(0.7*aut["amount"]))
+			stolen = random.randrange(int(0.1*aut["amount"]),int(0.7*aut["amount"]))
 			self.d[guild].update_one({"name":str(ctx.message.author)},{"$set":{"amount":aut["amount"]-stolen}})
 			await ctx.channel.send(f":oncoming_police_car:{ctx.message.author.display_name} načapala policie při činu! Pokuta činí {stolen} šekelů")
 

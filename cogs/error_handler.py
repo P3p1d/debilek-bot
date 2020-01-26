@@ -28,7 +28,7 @@ class CommandErrorHandler(commands.Cog):
 		if isinstance(error,commands.CommandOnCooldown):
 			return await ctx.channel.send(f"{ctx.message.author.mention} v klidu bejku! Ještě musíš {error.retry_after:.1f} sekund vychladnout.")
 		elif isinstance(error,commands.CommandNotFound):
-			return await ctx.channel.send("Tenhle příkaz neznám :disappointed_relieved: \nZkus !help")
+			return await ctx.channel.send("Tenhle příkaz neznám :disappointed_relieved: \nZkus §help")
 		elif isinstance(error,commands.BadArgument):
 			return await ctx.channel.send("Asi překlep?")
 		elif isinstance(error,commands.MissingRequiredArgument):

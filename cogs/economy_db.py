@@ -31,7 +31,7 @@ class Economy(commands.Cog):
 		acc = self.d[guild].find_one({"name":str(user)})
 		if acc is None:
 			self.d[guild].insert_one({"name":str(user),"amount":500})
-			return await self.bot.say(f"`Účet pro {user.display_name} byl založen!`")
+			return await ctx.channel.send(f"`Účet pro {user.display_name} byl založen!`")
 		
 		if "pers" in acc:
 			t = (datetime.datetime.utcnow()-acc["last_check"]).total_seconds()

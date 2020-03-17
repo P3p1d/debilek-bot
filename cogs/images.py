@@ -185,7 +185,7 @@ class Images(commands.Cog):
 	@commands.command(pass_context=True,aliases=['meme3','thatswherethetroublebegan'])
 	@commands.cooldown(rate=1, per=10, type=commands.BucketType.user)
 	async def thatsmile(self,ctx):
-		await self.bot.send_typing(ctx.message.channel)
+		await ctx.channel.trigger_typing()
 		try:
 			im,filename=await self.getimage(ctx)
 		except TypeError:

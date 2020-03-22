@@ -12,7 +12,6 @@ numpy==1.15.3
 Pillow==5.3.0
 praw==6.0.0
 pycparser==2.19
-PyInstaller==3.4
 PyNaCl==1.0.1
 pyparsing==2.2.2
 python-dateutil==2.7.3

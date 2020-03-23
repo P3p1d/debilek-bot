@@ -21,6 +21,7 @@ class Economy(commands.Cog):
 			if len(x) <= 2:
 				return fmtd
 			x = x[:i:]
+
 	@commands.command(pass_context = True,no_pm=True,aliases=["ekonomy","ekonomika","€","balance","bilance"])
 	@commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
 	async def economy(self,ctx,user:discord.Member = None):
@@ -43,25 +44,6 @@ class Economy(commands.Cog):
 				val=round(acc['amount'],2)
 			return await ctx.channel.send(f"`{user.display_name} má na účtě {val} penízků a vydělává {round(acc['pers'],2)} za vteřinu`")
 		await ctx.channel.send(f"`{user.display_name} má na účtě {acc['amount']} penízků`")
-	
-	@commands.command(pass_context = True,no_pm=True,aliases=["denne","deni","dailyscheckel","neetbux","šekel"])
-	@commands.cooldown(rate=1, per=10, type=commands.BucketType.user)
-	async def daily(self,ctx):
-		await ctx.channel.trigger_typing()
-		user = ctx.message.author
-		guild = str(ctx.message.guild.id)
-		acc = self.d[guild].find_one({"name":str(user)})
-		if acc is None:
-			self.d[guild].insert_one({"name":str(user),"amount":750,"last_daily":datetime.datetime.utcnow()})
-			await ctx.channel.send("250:dollar: přidáno!")
-		elif "last_daily" not in acc:
-			self.d[guild].update_one({"name":str(user)},{"$set":{"last_daily":datetime.datetime.utcnow(),"amount":acc["amount"]+250}})
-			await ctx.channel.send("250:dollar: přidáno!")
-		t = (datetime.datetime.utcnow()-acc["last_daily"]).days
-		if t < 0:
-			ctx.channel.send("`Dnešní příděl šekelů už jsi dostal, přijď zas příště!`")
-		self.d[guild].update_one({"name":str(user)},{"$set":{"last_daily":datetime.datetime.utcnow(),"amount":acc["amount"]+250}})
-		await ctx.channel.send("250:dollar: přidáno!")
 
 	@commands.command(pass_context = True,no_pm=True,aliases=["susenka","🍪","biscuit"])
 	@commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
@@ -96,7 +78,11 @@ class Economy(commands.Cog):
 		aut=self.d[guild].find_one({"name":str(ctx.message.author)})
 		if acc is None or aut is None:
 			return await ctx.channel.send("Jeden z vás si ještě nezaložil účet")
-		
+
+		if "protection" in acc:
+			if (datetime.datetime.now()-acc["protection"]).days < 1:
+				return await ctx.channel.send(f"{user.display_name} má zapnutou ochranu, nemůžeš ho okrást!")
+
 		if chance>=5:
 			stolen = random.randrange(0,int(0.2*acc["amount"]),10)
 			if acc["amount"]-stolen<0:
@@ -201,6 +187,29 @@ class Economy(commands.Cog):
 			e.add_field(name=biz["name"],value=f"{num} krát\nVydělává {round(num*biz['pers'],2)} za vteřinu",inline = False)
 		e.set_author(name=user.display_name,icon_url=user.avatar_url)
 		await ctx.channel.send(embed=e)
+
+	@commands.command(pass_context = True,no_pm=True,aliases=["stopsteal"])
+	@commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
+	async def ochrana(self,ctx):
+		await ctx.channel.trigger_typing()
+		guild = str(ctx.message.guild.id)
+		user=ctx.message.author
+		a = self.d[guild].find_one({"name":str(user)})
+		if a is None:
+			return await ctx.channel.send(f"{user.display_name} ještě sis nezaložil účet")
+		#if "protects" not in a:
+		#	self.d[guild].update_one({"name":str(user)},{"$push":{"protects":1}})
+		#price = 20000*(a["protects"]*1.5)
+		#if a["amount"] < price:
+		#	return await ctx.channel.send(f"Potřebuješ {price} peněz, a to jaksi nemáš :/")
+		if a["amount"] > 10000000:
+			return await ctx.channel.send("Už máš moc peněz, nějaká krádež ti neuškodí ;)")
+		price = 0.3*a["amount"]
+		if "protection" in a:
+			if (datetime.datetime.now()-a["protection"]).days < 1:
+				return await ctx.channel.send("Ochranu už máš")
+		self.d[guild].update_one({"name":str(user)},{"$inc":{"amount":-price},"$set":{"protection":datetime.datetime.now()}})
+		return await ctx.channel.send(f"Úspěšně sis aktivoval ochranu na 24 hodin za {price} penízků!")		
 
 def setup(bot):
 	bot.add_cog(Economy(bot))

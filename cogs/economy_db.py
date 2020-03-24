@@ -202,8 +202,8 @@ class Economy(commands.Cog):
 		#price = 20000*(a["protects"]*1.5)
 		#if a["amount"] < price:
 		#	return await ctx.channel.send(f"Potřebuješ {price} peněz, a to jaksi nemáš :/")
-		if a["amount"] > 10000000:
-			return await ctx.channel.send("Už máš moc peněz, nějaká krádež ti neuškodí ;)")
+		#if a["amount"] > 10000000:
+		#	return await ctx.channel.send("Už máš moc peněz, nějaká krádež ti neuškodí ;)")
 		price = 0.3*a["amount"]
 		if "protection" in a:
 			if (datetime.datetime.now()-a["protection"]).days < 1:

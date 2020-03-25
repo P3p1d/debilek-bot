@@ -106,8 +106,8 @@ class Economy(commands.Cog):
 			amount = int(amount)
 		except:
 			return await ctx.channel.send("Jedna z hodnot je špatně!")		
-		if mlt<=1:
-			return ctx.channel.send("Násobitel musí být větší než jedna!")
+		if mlt<=2:
+			return ctx.channel.send("Násobitel musí být větší než dva!")
 		chance = 1/mlt
 		guild = str(ctx.message.guild.id)
 		a = self.d[guild].find_one({"name":str(ctx.message.author)})

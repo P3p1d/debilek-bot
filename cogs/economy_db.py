@@ -209,7 +209,33 @@ class Economy(commands.Cog):
 			if (datetime.datetime.now()-a["protection"]).days < 1:
 				return await ctx.channel.send("Ochranu už máš")
 		self.d[guild].update_one({"name":str(user)},{"$inc":{"amount":-price},"$set":{"protection":datetime.datetime.now()}})
-		return await ctx.channel.send(f"Úspěšně sis aktivoval ochranu na 24 hodin za {price} penízků!")		
+		return await ctx.channel.send(f"Úspěšně sis aktivoval ochranu na 24 hodin za {price} penízků!")	
+	
+	@commands.command(pass_context = True,no_pm=True,aliases=["posli","zaplat"])
+	@commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
+	async def pay(self,ctx,amount,user:discord.Member=None):				
+		if user is None:
+			return await ctx.channel.send("Nikoho jsi neoznačil!")
+
+		try:
+			amount = float(amount)
+		except Exception as e:
+			return await ctx.channel.send("Při převodu hodnoty se vyskytla chbya, možná si zadal nějaké postižené číslo...")
+
+		if amount is None or amount <= 0:
+			return await ctx.channel.send("Hodnota peněz musí být větší než nula!")
+		
+
+		a = self.d[str(ctx.message.guild.id)].find_one({"name":str(ctx.message.author)})
+		u = self.d[str(ctx.message.guild.id)].find_one({"name":str(user)})
+		if a is None or u is None:
+			return await ctx.channel.send("Jeden z vás si ještě nezaložil účet!")
+		if a["amount"]<amount:
+			return await ctx.channel.send("Chtěl jsi poslat víc než máš na účtě!")
+
+		self.d[str(ctx.message.guild.id)].update_one({"name":str(ctx.message.author)},{"$set":{"amount":float((float(a["amount"])-float(amount)))}})
+		self.d[str(ctx.message.guild.id)].update_one({"name":str(user)},{"$inc":{"amount":amount}})
+		return await ctx.channel.send(f"Úspěšně jsi poslal {user.display_name} {amount} penízků!")
 
 def setup(bot):
 	bot.add_cog(Economy(bot))

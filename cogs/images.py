@@ -99,7 +99,7 @@ class Images(commands.Cog):
 		except TypeError:
 			return await ctx.channel.send("Žádný obrázek ve správné velikosti se mi nepodařilo najít :cry:")
 		im = im.convert(mode="RGB")
-		im.thumbnail(size)
+		im.thumbnail(im.size)
 		cz = Image.open("./images/czech_flag.png")
 		cz=cz.resize((im.size)).convert('RGB')
 		im=Image.blend(im,cz,0.3)
@@ -107,7 +107,24 @@ class Images(commands.Cog):
 		im.save(filename,"JPEG",quality = 90)
 		await ctx.channel.send(file=discord.File(filename))
 		os.remove(filename)
-		os.remove(filename)					
+
+	@commands.command(pass_context=True,aliases=['homo','homo_flag'])
+	@commands.cooldown(rate=1, per=6, type=commands.BucketType.user)
+	async def gay(self,ctx):
+		await ctx.channel.trigger_typing()
+		try:
+			im,filename=await self.getimage(ctx)
+		except TypeError:
+			return await ctx.channel.send("Žádný obrázek ve správné velikosti se mi nepodařilo najít :cry:")
+		im = im.convert(mode="RGB")
+		im.thumbnail(im.size)
+		cz = Image.open("./images/gay.png")
+		cz=cz.resize((im.size)).convert('RGB')
+		im=Image.blend(im,cz,0.3)
+		
+		im.save(filename,"JPEG",quality = 90)
+		await ctx.channel.send(file=discord.File(filename))
+		os.remove(filename)				
 
 	@commands.command(pass_context=True,aliases=['otoc'])
 	@commands.cooldown(rate=1, per=6, type=commands.BucketType.user)
@@ -122,7 +139,7 @@ class Images(commands.Cog):
 		except TypeError:
 			return await ctx.channel.send("Žádný obrázek ve správné velikosti se mi nepodařilo najít :cry:")
 		im = im.convert(mode="RGB")
-		im.thumbnail(size)
+		im.thumbnail(im.size)
 		im = im.rotate(angle,expand=1)
 		im.save(filename,"JPEG",quality = 90)
 		await ctx.channel.send(file=discord.File(filename))
@@ -263,6 +280,7 @@ class Images(commands.Cog):
 		canvas.save(filename,"JPEG",quality = 90)
 		await ctx.channel.send(file=discord.File(filename))
 		os.remove(filename)
+
 	@commands.command(pass_context=True,aliases=['meme8'])
 	@commands.cooldown(rate=1, per=6, type=commands.BucketType.user)
 	async def disability(self,ctx):	

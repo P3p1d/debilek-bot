@@ -1,6 +1,7 @@
 import json
 import random
 import vtipek
+import certifi
 import discord
 import requests
 import eightballer
@@ -167,9 +168,9 @@ class Fun(commands.Cog):
 		fuser_was,suser_was=fuser.display_name,suser.display_name
 		fuser,suser = unidecode(fuser.display_name.replace(" ","+")),unidecode(suser.display_name.replace(" ","+"))
 		url = url+f"name1={fuser}&name2={suser}"
-		r = urllib.request.urlopen(url)
+		r = urllib.request.urlopen(url,cafile=certifi.where())
 		soup = BeautifulSoup(r,'html.parser')
-		result = soup.find("div", {"class":"result score"}).text
+		result = soup.find("div", {"class":"result__score"}).text.strip()
 		await ctx.channel.send(f"{fuser_was} a {suser_was} spolu mají šanci `{result}`:heart:")
 	
 	@commands.group(pass_context= True,aliases=["svátek"])

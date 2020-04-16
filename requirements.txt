@@ -4,6 +4,7 @@ asyncio==3.4.3
 discord.py[voice]>=1.2.5
 beautifulsoup4==4.6.3
 cachetools==3.0.0
+certifi==2018.8.24
 future==0.17.1
 html2text==2018.1.9
 lxml==4.2.5

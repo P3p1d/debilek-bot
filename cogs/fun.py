@@ -195,7 +195,7 @@ class Fun(commands.Cog):
 		if user == None:
 			user = ctx.message.author
 		e=discord.Embed(colour=random.randint(0, 0xFFFFFF))
-		e.set_author(name="Hovínko :poop:")
+		e.set_author(name="Hovínko")
 		e.add_field(name=f"{str(user)[:-5]} má hovno o hmotnosti úctyhodných",value=str(random.randrange(0,2000))+" gramů")
 		await ctx.channel.send(embed=e)
 

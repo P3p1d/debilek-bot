@@ -188,6 +188,16 @@ class Fun(commands.Cog):
 		svatek_cz = r["data"]["name_cz"]
 		svatek_sk = r["data"]["name_sk"]
 		await ctx.channel.send(f"Zítra má svátek `{svatek_cz}` a na Slovensku `{svatek_sk}`:ribbon:")
+	
+	@commands.group(pass_context= True,aliases=["vahahovna"])
+	@commands.cooldown(rate=1, per=10, type=commands.BucketType.user)
+	async def hovno(self,ctx,user:discord.Member=None):
+		if user == None:
+			user = ctx.message.author
+		e=discord.Embed(colour=random.randint(0, 0xFFFFFF))
+		e.set_author(name="Hovínko :poop:")
+		e.add_field(name=f"{str(user)[:-5]} má hovno o hmotnosti úctyhodných",value=str(random.randrange(0,2000))+" gramů")
+		await ctx.channel.send(embed=e)
 
 def setup(bot):
 	bot.add_cog(Fun(bot))

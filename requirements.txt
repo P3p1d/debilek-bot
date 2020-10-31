@@ -1,5 +1,5 @@
 aiohttp>=1.0.0,<1.1.0
-websockets>=5.0
+websockets>=8.1
 asyncio==3.4.3
 discord.py[voice]>=1.5.1
 beautifulsoup4==4.6.3

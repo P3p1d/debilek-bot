@@ -10,7 +10,7 @@ html2text==2018.1.9
 lxml==4.2.5
 multidict==4.4.2
 numpy==1.15.3
-Pillow==6.2.0
+Pillow==7.1.0
 praw>=7.1.0
 pycparser==2.19
 PyNaCl==1.0.1

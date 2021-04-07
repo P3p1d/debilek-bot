@@ -12,19 +12,19 @@ import requests
 print(discord.__version__)
 def get_prefix(bot, message):
     """A callable Prefix for our bot. This could be edited to allow per server prefixes."""
-    prefixes = ['t!']
+    prefixes = ['§','d!','debile ','Debile ']
     #if not message.server:
     #    # pouze vykricnik mimo server
     #    return '!'
     return commands.when_mentioned_or(*prefixes)(bot, message)
 
-TOKEN = "NTI2MzY0MDQ4ODcxMzkxMjQy.DwEItw.mOobWNz6KergrwU2zF39zSnCp2c"
+TOKEN = os.environ["TOKEN"]
 
 bot = discord.Client()
 bot = commands.Bot(command_prefix=get_prefix)
 bot.remove_command('help')
 #()  []  {} `
-init_extensions = ['cogs.fun','cogs.wiki','cogs.economy_db','cogs.help','cogs.error_handler','cogs.Music','cogs.ascii_art','cogs.nasa',]#vynechano reddit a obrazky
+init_extensions = ['cogs.fun','cogs.wiki','cogs.economy_db','cogs.help','cogs.error_handler','cogs.images','cogs.Music','cogs.ascii_art','cogs.nasa','cogs.Reddit']
 
 if __name__ == '__main__':
     for extension in init_extensions:

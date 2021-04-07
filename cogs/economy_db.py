@@ -171,8 +171,8 @@ class Economy(commands.Cog):
 			return await ctx.channel.send("Na tento byznys nemáš peníze!")
 
 		if "bizs" in a:
-			if (a["bizs"].count(bizid) + amount_to_buy) > 151:
-				return await ctx.channel.send("Už bys měl moc byznysů tohoto typu (maximum je 150)!")
+			if (a["bizs"].count(bizid) + amount_to_buy) > 400:
+				return await ctx.channel.send("Už bys měl moc byznysů tohoto typu (maximum je 400)!")
 
 		bizlist=[bizid]*amount_to_buy #seznam ve kterem je bizid tolikrat, kolikrát má být koupeno		
 

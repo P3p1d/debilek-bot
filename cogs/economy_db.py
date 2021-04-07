@@ -14,6 +14,7 @@ class Economy(commands.Cog):
 	def parser(self,x):
 		i = -3
 		fmtd = ""
+		x= str(x)
 		if len(x) < 4:
 			return x
 		while True:
@@ -43,7 +44,7 @@ class Economy(commands.Cog):
 			else:
 				val=round(acc['amount'],2)
 			return await ctx.channel.send(f"`{user.display_name} má na účtě {val} penízků a vydělává {round(acc['pers'],2)} za vteřinu`")
-		await ctx.channel.send(f"`{user.display_name} má na účtě {acc['amount']} penízků`")
+		return await ctx.channel.send(f"`{user.display_name} má na účtě {acc['amount']} penízků`")
 
 	@commands.command(pass_context = True,no_pm=True,aliases=["susenka","🍪","biscuit"])
 	@commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
@@ -85,6 +86,9 @@ class Economy(commands.Cog):
 
 		if chance>=5:
 			stolen = random.randrange(0,int(0.2*acc["amount"]),10)
+			if stolen > (2*aut["amount"]):
+				stolen = (2*aut["amount"])     #maximalne ukradne dvojnasobek zlodejovo jmeni
+
 			if acc["amount"]-stolen<0:
 				stolen = acc["amount"]
 			if acc["amount"]<=0:
@@ -127,6 +131,8 @@ class Economy(commands.Cog):
 	async def business(self,ctx):
 		await ctx.channel.trigger_typing()
 		point = self.col.biz.bizdb.find({})
+		point = sorted(point,key=lambda i: i["id"])    #seradit podle id
+
 		e=discord.Embed(colour=discord.Colour.green())
 		for doc in point:
 			e.add_field(name=doc["name"],value=f'id: {doc["id"]}\ncena: {self.parser(str(doc["price"]))}:dollar:\n{doc["des"]}',inline=False)
@@ -143,30 +149,41 @@ class Economy(commands.Cog):
 		return val
 	
 	@commands.command(pass_context = True,no_pm=True,aliases=["kup"])
-	@commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
-	async def buy(self,ctx,bizid:int=0):
+	@commands.cooldown(rate=2, per=5, type=commands.BucketType.user)
+	async def buy(self,ctx,bizid:int=0,amount_to_buy:int=1):
 		await ctx.channel.trigger_typing()
 		guild = str(ctx.message.guild.id)
+
 		if bizid==0:
 			return await ctx.channel.send("Neřekl jsi, co si chceš koupit!")
 		elif bizid<1:
 			return await ctx.channel.send("ID musí být větší než nula")
+		elif amount_to_buy<1:
+			return await ctx.channel.send("Nemůžeš si koupit méně jak jeden kus")
+
 		biz = self.col.biz.bizdb.find_one({"id":bizid})
 		if biz is None:
 			return await ctx.channel.send("Tento byznys neexistuje!")
 		a = self.d[guild].find_one({"name":str(ctx.message.author)})
 		if a is None:
 			return await ctx.channel.send("Ještě sis nezaložil účet!")
-		elif biz["price"]>a["amount"]:
+		elif (biz["price"]*amount_to_buy)>a["amount"]:
 			return await ctx.channel.send("Na tento byznys nemáš peníze!")
-		self.d[guild].update_one({"name":str(ctx.message.author)},{"$push":{"bizs":bizid}})
+
+		if "bizs" in a:
+			if (a["bizs"].count(bizid) + amount_to_buy) > 151:
+				return await ctx.channel.send("Už bys měl moc byznysů tohoto typu (maximum je 150)!")
+
+		bizlist=[bizid]*amount_to_buy #seznam ve kterem je bizid tolikrat, kolikrát má být koupeno		
+
+		self.d[guild].update_one({"name":str(ctx.message.author)},{"$push":{"bizs":{"$each":bizlist}}})
 		a = self.d[guild].find_one({"name":str(ctx.message.author)})
 		upers = await self.getpers(a)																							
 		if "last_check" not in a:
 			self.d[guild].update_one({"name":str(ctx.message.author)},{"$set":{"amount":a["amount"]-float(biz["price"]),"pers":upers,"last_check":datetime.datetime.utcnow()}})
 		else:
 			self.d[guild].update_one({"name":str(ctx.message.author)},{"$set":{"amount":a["amount"]-float(biz["price"]),"pers":upers}})
-		await ctx.channel.send(f"Úspěšně sis koupil předmět {biz['name']}!")
+		await ctx.channel.send(f"Úspěšně sis koupil {amount_to_buy}x předmět {biz['name']}!")
 
 	@commands.command(pass_context = True,no_pm=True,aliases=["inventář"])
 	@commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
@@ -236,6 +253,32 @@ class Economy(commands.Cog):
 		self.d[str(ctx.message.guild.id)].update_one({"name":str(ctx.message.author)},{"$set":{"amount":float((float(a["amount"])-float(amount)))}})
 		self.d[str(ctx.message.guild.id)].update_one({"name":str(user)},{"$inc":{"amount":amount}})
 		return await ctx.channel.send(f"Úspěšně jsi poslal {user.display_name} {amount} penízků!")
+
+	@commands.command(pass_context = True,no_pm=True,aliases=["dennivyplata"])
+	@commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
+	async def daily(self,ctx):
+
+		a = self.d[str(ctx.message.guild.id)].find_one({"name":str(ctx.message.author)})
+		if a is None:
+			return await ctx.channel.send("Ještě sis nezaložil účet")
+
+		reward = 1000
+		if reward > a["amount"]:
+			reward = 1.05*a["amount"]
+
+		if "last_daily" not in a:
+			self.d[str(ctx.message.guild.id)].update_one({"name":str(ctx.message.author)},{"$set":{"last_daily":datetime.datetime.utcnow()},"$inc":{"amount":reward}})
+			return await ctx.channel.send(f"Dostal jsi svůj denní příděl {reward} penízků!")
+
+		time_difference = datetime.datetime.utcnow()-a["last_daily"]
+
+		if int(time_difference.days) >= 1:
+			self.d[str(ctx.message.guild.id)].update_one({"name":str(ctx.message.author)},{"$set":{"last_daily":datetime.datetime.utcnow()},"$inc":{"amount":reward}})
+			return await ctx.channel.send(f"Dostal jsi svůj denní příděl {self.parser(reward)} penízků!")
+		else:
+			return await ctx.channel.send(f"Ještě musíš {24-(time_difference.seconds//3600)} hodin počkat!")
+
+
 
 def setup(bot):
 	bot.add_cog(Economy(bot))

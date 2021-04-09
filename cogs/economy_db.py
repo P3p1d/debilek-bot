@@ -160,6 +160,8 @@ class Economy(commands.Cog):
 			return await ctx.channel.send("ID musí být větší než nula")
 		elif amount_to_buy<1:
 			return await ctx.channel.send("Nemůžeš si koupit méně jak jeden kus")
+		elif amount_to_buy>20:
+			return await ctx.channel.send("Najednou můžeš koupit maximálně 20 kusů")	    
 
 		biz = self.col.biz.bizdb.find_one({"id":bizid})
 		if biz is None:
@@ -171,8 +173,8 @@ class Economy(commands.Cog):
 			return await ctx.channel.send("Na tento byznys nemáš peníze!")
 
 		if "bizs" in a:
-			if (a["bizs"].count(bizid) + amount_to_buy) > 400:
-				return await ctx.channel.send("Už bys měl moc byznysů tohoto typu (maximum je 400)!")
+			if (a["bizs"].count(bizid) + amount_to_buy) > 1000:
+				return await ctx.channel.send("Už bys měl moc byznysů tohoto typu (maximum je 1000)!")
 
 		bizlist=[bizid]*amount_to_buy #seznam ve kterem je bizid tolikrat, kolikrát má být koupeno		
 

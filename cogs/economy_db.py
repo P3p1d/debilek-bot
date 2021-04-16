@@ -182,9 +182,9 @@ class Economy(commands.Cog):
 		a = self.d[guild].find_one({"name":str(ctx.message.author)})
 		upers = await self.getpers(a)																							
 		if "last_check" not in a:
-			self.d[guild].update_one({"name":str(ctx.message.author)},{"$set":{"amount":a["amount"]-float(biz["price"]),"pers":upers,"last_check":datetime.datetime.utcnow()}})
+			self.d[guild].update_one({"name":str(ctx.message.author)},{"$set":{"amount":a["amount"]-float(biz["price"]*amount),"pers":upers,"last_check":datetime.datetime.utcnow()}})
 		else:
-			self.d[guild].update_one({"name":str(ctx.message.author)},{"$set":{"amount":a["amount"]-float(biz["price"]),"pers":upers}})
+			self.d[guild].update_one({"name":str(ctx.message.author)},{"$set":{"amount":a["amount"]-float(biz["price"]*amount),"pers":upers}})
 		await ctx.channel.send(f"Úspěšně sis koupil {amount_to_buy}x předmět {biz['name']}!")
 
 	@commands.command(pass_context = True,no_pm=True,aliases=["inventář"])

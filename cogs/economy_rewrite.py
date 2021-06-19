@@ -48,6 +48,7 @@ class Economy(commands.Cog):
 			return await ctx.channel.send(f"`{user.display_name} má na účtě {val} penízků a vydělává {round(acc['pers'],2)} za vteřinu`")
 		return await ctx.channel.send(f"`{user.display_name} má na účtě {acc['amount']} penízků`")
 
+	"""
 	@commands.command(pass_context = True,no_pm=True,aliases=["thief","kradez"])
 	@commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
 	async def steal(self,ctx,user:discord.Member=None):
@@ -83,6 +84,7 @@ class Economy(commands.Cog):
 			stolen = random.randrange(int(0.005*aut["amount"]),int(0.1*aut["amount"]))
 			self.d.users.update_one({"_id":ctx.message.author.id},{"$set":{"amount":aut["amount"]-stolen}})
 			await ctx.channel.send(f":oncoming_police_car:{ctx.message.author.display_name} načapala policie při činu! Pokuta činí {stolen} šekelů")
+	"""
 
 	@commands.command(pass_context = True,no_pm=True,aliases=["roulete","ruleta"])
 	@commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
@@ -207,6 +209,7 @@ class Economy(commands.Cog):
 		e.set_author(name=user.display_name,icon_url=user.avatar_url)
 		await ctx.channel.send(embed=e)	
 
+	"""
 	@commands.command(pass_context = True,no_pm=True,aliases=["stopsteal"])
 	@commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
 	async def ochrana(self,ctx):
@@ -223,7 +226,8 @@ class Economy(commands.Cog):
 				return await ctx.channel.send("Ochranu už máš")
 		self.d.users.update_one({"_id":user.id},{"$inc":{"amount":-price},"$set":{"protection":datetime.datetime.now()}})
 		return await ctx.channel.send(f"Úspěšně sis aktivoval ochranu na 24 hodin za {price} penízků!")		
-
+	"""
+	
 	@commands.command(pass_context = True,no_pm=True,aliases=["posli","zaplat"])
 	@commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
 	async def pay(self,ctx,amount:int,user:discord.Member=None):				
@@ -271,6 +275,7 @@ class Economy(commands.Cog):
 		else:
 			return await ctx.channel.send(f"Ještě musíš {24-(time_difference.seconds//3600)} hodin počkat!")
 
+	"""
 	@commands.group(pass_context = True,no_pm=True,aliases=["kup"])
 	@commands.cooldown(rate=2, per=5, type=commands.BucketType.user)		
 	async def gpu(self,ctx):
@@ -285,7 +290,7 @@ class Economy(commands.Cog):
 		if a is None: 
 			return await ctx.channel.send("Nemáš založený účet!")
 
-
+	"""
 
 def setup(bot):
 	bot.add_cog(Economy(bot))	

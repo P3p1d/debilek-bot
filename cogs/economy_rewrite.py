@@ -34,7 +34,7 @@ class Economy(commands.Cog):
 
 		acc = self.d.users.find_one({"_id":user.id})
 		if acc is None:
-			self.d.users.insert_one({"_id":user.id,"amount":500,"date_registered":datetime.datetime.utcnow(),"bizs":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]})
+			self.d.users.insert_one({"_id":user.id,"amount":500,"date_registered":datetime.datetime.utcnow(),"bizs":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]})
 			return await ctx.channel.send(f"`Účet pro {user.display_name} byl založen!`")
 
 		if "pers" in acc:

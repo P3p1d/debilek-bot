@@ -166,8 +166,8 @@ class Economy(commands.Cog):
 		try:
 			if a["bizs"][bizid] is None:
 				a["bizs"]
-			if (a["bizs"][bizid] + amount_to_buy) > 200:
-				return await ctx.channel.send("Už bys měl moc byznysů tohoto typu (maximum je 200)!")
+			if (a["bizs"][bizid] + amount_to_buy) > 1000:
+				return await ctx.channel.send("Už bys měl moc byznysů tohoto typu (maximum je 1000)!")
 			self.d.users.update_one({"_id":ctx.message.author.id},{"$inc":{f"bizs.{str(bizid)}":amount_to_buy}})	
 		
 		except IndexError:

@@ -48,7 +48,6 @@ class Economy(commands.Cog):
 			return await ctx.channel.send(f"`{user.display_name} má na účtě {val} penízků a vydělává {round(acc['pers'],2)} za vteřinu`")
 		return await ctx.channel.send(f"`{user.display_name} má na účtě {acc['amount']} penízků`")
 
-	"""
 	@commands.command(pass_context = True,no_pm=True,aliases=["thief","kradez"])
 	@commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
 	async def steal(self,ctx,user:discord.Member=None):
@@ -84,7 +83,6 @@ class Economy(commands.Cog):
 			stolen = random.randrange(int(0.005*aut["amount"]),int(0.1*aut["amount"]))
 			self.d.users.update_one({"_id":ctx.message.author.id},{"$set":{"amount":aut["amount"]-stolen}})
 			await ctx.channel.send(f":oncoming_police_car:{ctx.message.author.display_name} načapala policie při činu! Pokuta činí {stolen} šekelů")
-	"""
 
 	@commands.command(pass_context = True,no_pm=True,aliases=["roulete","ruleta"])
 	@commands.cooldown(rate=1, per=5, type=commands.BucketType.user)

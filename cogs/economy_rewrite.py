@@ -47,8 +47,7 @@ class Economy(commands.Cog):
 				val=round(acc['amount'],2)
 			return await ctx.channel.send(f"`{user.display_name} má na účtě {val} penízků a vydělává {round(acc['pers'],2)} za vteřinu`")
 		return await ctx.channel.send(f"`{user.display_name} má na účtě {acc['amount']} penízků`")
-
-	"""
+	'''
 	@commands.command(pass_context = True,no_pm=True,aliases=["thief","kradez"])
 	@commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
 	async def steal(self,ctx,user:discord.Member=None):
@@ -84,8 +83,7 @@ class Economy(commands.Cog):
 			stolen = random.randrange(int(0.005*aut["amount"]),int(0.1*aut["amount"]))
 			self.d.users.update_one({"_id":ctx.message.author.id},{"$set":{"amount":aut["amount"]-stolen}})
 			await ctx.channel.send(f":oncoming_police_car:{ctx.message.author.display_name} načapala policie při činu! Pokuta činí {stolen} šekelů")
-	"""
-
+	'''
 	@commands.command(pass_context = True,no_pm=True,aliases=["roulete","ruleta"])
 	@commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
 	async def automat(self,ctx,mlt,amount):
@@ -176,9 +174,9 @@ class Economy(commands.Cog):
 
 		upers = biz["pers"]	* amount_to_buy																						
 		if "last_check" not in a:
-			self.d.users.update_one({"_id":ctx.message.author.id},{"$set":{"amount":a["amount"]-float(biz["price"]),"last_check":datetime.datetime.utcnow()},"$inc":{"pers":upers}})
+			self.d.users.update_one({"_id":ctx.message.author.id},{"$set":{"amount":a["amount"]-float(biz["price"]*amount_to_buy),"last_check":datetime.datetime.utcnow()},"$inc":{"pers":upers}})
 		else:
-			self.d.users.update_one({"_id":ctx.message.author.id},{"$set":{"amount":a["amount"]-float(biz["price"])},"$inc":{"pers":upers}})
+			self.d.users.update_one({"_id":ctx.message.author.id},{"$set":{"amount":a["amount"]-float(biz["price"]*amount_to_buy)},"$inc":{"pers":upers}})
 		await ctx.channel.send(f"Úspěšně sis koupil {amount_to_buy}x předmět {biz['name']}!")
 
 	@commands.command(pass_context = True,no_pm=True,aliases=["inventář"])

@@ -21,7 +21,7 @@ def get_prefix(bot, message):
 TOKEN = os.environ["TOKEN"]
 
 intents = discord.Intents.default()
-intents.message_content = True
+intents.messages = True
 
 bot = discord.Client()
 bot = commands.Bot(command_prefix=get_prefix, intents=intents)

@@ -20,8 +20,11 @@ def get_prefix(bot, message):
 
 TOKEN = os.environ["TOKEN"]
 
+intents = discord.Intents.default()
+intents.message_content = True
+
 bot = discord.Client()
-bot = commands.Bot(command_prefix=get_prefix)
+bot = commands.Bot(command_prefix=get_prefix,, intents=intents)
 bot.remove_command('help')
 #()  []  {} `
 init_extensions = ['cogs.fun','cogs.wiki','cogs.economy_rewrite','cogs.help','cogs.error_handler','cogs.images','cogs.Music','cogs.ascii_art','cogs.nasa','cogs.Reddit']
